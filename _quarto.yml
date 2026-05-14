@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "*.ipynb"
+    - "!-*"
+  resources:
+    - "Posts/attachments"
+
+website:
+  title: "HST Research Blog"
+
+  page-footer:
+    border: true
+
+  navbar:
+    left:
+      - text: yechan
+        href: https://miruetoto.github.io/yechan/
+      - text: hstblog
+        href: https://miruetoto.github.io/hstblog/
+    right:
+      - icon: github
+        href: https://github.com/miruetoto/hstblog
+
+format:
+  html:
+    theme: cosmo
+    number-sections: false
+    css: styles.css
+    toc: true
+    toc-location: right
+    highlight-style: github
+    toc-depth: 3

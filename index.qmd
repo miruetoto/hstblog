@@ -1,0 +1,14 @@
+---
+listing:
+  contents: Posts
+  sort: "date desc"
+  type: table
+  categories: true
+  sort-ui: true
+  filter-ui: true
+  max-items: 999
+page-layout: full
+title-block-banner: false
+---
+
+Heavy Snow Transform 연구 블로그.
