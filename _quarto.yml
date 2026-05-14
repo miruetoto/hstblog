@@ -15,15 +15,7 @@ website:
   page-footer:
     border: true
 
-  navbar:
-    left:
-      - text: yechan
-        href: https://miruetoto.github.io/yechan/
-      - text: hstblog
-        href: https://miruetoto.github.io/hstblog/
-    right:
-      - icon: github
-        href: https://github.com/miruetoto/hstblog
+  navbar: false
 
 format:
   html:
