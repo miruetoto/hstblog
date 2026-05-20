@@ -7,6 +7,48 @@
     "text": "본 브라우저는 PDF iframe 임베드를 지원하지 않습니다. 아래 다운로드 버튼을 사용해 주십시오.\n\n\n 📦 다운로드 (PDF + TeX, zip)"
   },
   {
+    "objectID": "Posts/260515_41f2b0.html",
+    "href": "Posts/260515_41f2b0.html",
+    "title": "Thm A,B,C 검증",
+    "section": "",
+    "text": "각 노드의 장기 적립률을 \\(\\rho_i = \\lim_{t\\to\\infty} \\frac{1}{t}\\sum_{s=1}^t \\mathbf{1}\\{X_s = v_i\\}\\) 라 하자. \\(\\rho\\)가 균등한지 여부에 따라 SD의 스케일링이 달라진다."
+  },
+  {
+    "objectID": "Posts/260515_41f2b0.html#a.-그래프-구조-검증-f-0",
+    "href": "Posts/260515_41f2b0.html#a.-그래프-구조-검증-f-0",
+    "title": "Thm A,B,C 검증",
+    "section": "A. 그래프 구조 검증 (\\(f = 0\\))",
+    "text": "A. 그래프 구조 검증 (\\(f = 0\\))\n\nA.1 SD 임베딩\n각 그래프에서 시뮬 후 \\(\\sqrt{SD^2_{ij}/\\tau}\\) 의 2D MDS 임베딩.\n\n\n\nA.2 \\(SD^2/t\\) 수렴 곡선 (log-log)\n같은 24 예제의 \\(\\overline{SD^2/t}\\) (off-diagonal 평균) 를 \\(\\tau\\) 에 대해 log-log plot. 수렴하면 수평선, 발산하면 양의 기울기."
+  },
+  {
+    "objectID": "Posts/260515_41f2b0.html#b.-신호-변형-검증-f-neq-0",
+    "href": "Posts/260515_41f2b0.html#b.-신호-변형-검증-f-neq-0",
+    "title": "Thm A,B,C 검증",
+    "section": "B. 신호 변형 검증 (\\(f \\neq 0\\))",
+    "text": "B. 신호 변형 검증 (\\(f \\neq 0\\))\n\nB.1 Parity Cycle \\(C_{60}\\) — \\(f_i = (-1)^i\\)\n\n\n\nB.2 Directed Cycle \\(C_{60}\\) — \\(f = \\pm 1\\)\n\n\n\nB.3 Outlier Cylinder"
+  },
+  {
+    "objectID": "Posts/260514_b19d92.html",
+    "href": "Posts/260514_b19d92.html",
+    "title": "HST에서 snowdistance는 결국 유클리드 정보를 잊는가?",
+    "section": "",
+    "text": "아래는 논문의 Example 2 원본 그림이다. 위쪽이 원래 세팅 — (a) 신호 없는 thin ring, (b) \\(y=\\pm3\\) cylinder 신호 — 이고, 아래 3행이 각각 Euclidean / diffusion / snow distance 임베딩이다.\n\n이 논문 그림의 아래쪽 snow distance 세팅에서 시뮬레이션을 훨씬 더 오래 진행해 보았다. 눈량을 \\(b_t \\sim \\mathrm{Uniform}(0, 0.05)\\) 로 랜덤 추출하면서 \\(\\tau\\) 를 100번부터 100억번까지 늘려 본 것이다. 이걸 끝까지 돌려본 이유는 (1) 정말로 유클리드 거리에서 출발해서 그래프 거리로 수렴하는지 (2) 눈의양을 고정적인 \\(b\\)로 하든 \\(U(0,b)\\)로 하든 같은 결과를 주는지 확인하고 싶었기 때문.\n- \\(\\tau \\approx 47{,}000\\) (약 5만번): 논문그림과 비슷한 상황\n\n- \\(\\tau \\approx 100\\)만번 (백만번): 약 5만번의 결과와 비슷. 전체적으로 디노이징된 상태\n\n- \\(\\tau \\approx 5\\)억번: 클리프 소멸. 거의 닫힌 링.\n\n- \\(\\tau = 100\\)억번: 초기효과 소멸. (a) 와 (b) 모두 완전한 링으로 수렴.\n\n- 전체 애니메이션 (100번 \\(\\to\\) 100억번, 로그 스케일 300 프레임):\n\n\n이 결과는 눈을 \\(U(0,b)\\)에서 추출한 경우이며, 눈을 고정값 \\(b\\)로 뿌렸을 경우도 같은 결과를 얻을 수 있었음."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "HST Research Blog",
+    "section": "",
+    "text": "Heavy Snow Transform 연구 블로그.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nMay 19, 2026\n\n\nThm A,B,C\n\n\n최규빈 \n\n\n\n\n\n\nMay 16, 2026\n\n\n그래프 도메인에서의 여러가지 거리\n\n\n최규빈 \n\n\n\n\n\n\nMay 15, 2026\n\n\nHST에서 블락이 영원히 없다면?\n\n\n최규빈 \n\n\n\n\n\n\nMay 15, 2026\n\n\nThm A,B,C 검증\n\n\n최규빈 \n\n\n\n\n\n\nMay 14, 2026\n\n\nHST에서 snowdistance는 결국 유클리드 정보를 잊는가?\n\n\n최규빈 \n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "Posts/260515_d3bd76.html",
+    "href": "Posts/260515_d3bd76.html",
+    "title": "HST에서 블락이 영원히 없다면?",
+    "section": "",
+    "text": "HST의 block/reset 메커니즘이 없으면 어떻게 될까? HST₀를 정의하자: 순수 랜덤워크로 이동하고, 도착한 노드에 무조건 눈을 적립. block도 reset도 없다.\nWheel \\(W_{51}\\) (hub deg 50, leaf deg 3) 에서 uniform \\(\\mu_0\\), \\(b=0.05\\), \\(\\tau=10^9\\) 으로 비교.\n\n결과\n\nHST (Row 1):\n- 전체 \\(SD^2 \\propto t^{1.0}\\) — Thm A balanced. \\(SD^2/t \\to c\\) 유한 상수로 수렴.\n- leaf 임베딩에서 ring 구조가 선명하게 드러남.\nHST₀ (Row 2):\n- 전체 \\(SD^2 \\propto t^{3.0}\\) — Thm A 실패, Thm C drift regime. block 이 없어 occupation rate \\(\\rho_i = \\pi_i\\) (stationary) 가 되고, 이때 \\[\\frac{SD^2_{ij}}{t^3} \\to \\frac{\\bar{b}^2 (\\pi_i - \\pi_j)^2}{3}\\] 로 \\(t^3\\) 스케일에서 유한 상수 수렴한다. 즉 “발산” 은 어디까지나 Thm A 의미의 발산 (\\(SD^2/t \\to \\infty\\)) 일 뿐, \\(t^3\\) 로 나누면 정상 수렴 — HST₀ 는 Thm C drift 의 specific case (\\(\\rho_i = \\pi_i\\)) 다.\n- leaf끼리만 보면 \\(SD^2 \\propto t^{2.0}\\) — 같은 degree leaf 끼리는 \\(\\pi_i = \\pi_j\\) 라 \\((\\pi_i - \\pi_j)^2\\) leading term 이 0, 잔존 \\(\\sqrt{s}\\) noise 가 \\(t^2\\) scaling 으로 남는 Thm B intermediate.\n- 임베딩에서 구조 정보가 사라지고 hub/leaf 분리만 남음 — Resistance 거리 large-\\(n\\) 극한 (\\(R_{\\mathrm{eff}}(i, j) \\approx 1/d_i + 1/d_j\\), von Luxburg 등 2014) 의 degree-only ultrametric 과 같은 양상.\n\n\n해석\nblock 메커니즘은 단순히 “수렴 속도”를 높이는 게 아니라, Thm A/B 의 그래프 구조 정보 보존을 가능하게 하는 핵심이다. block 이 없으면:\n- 워커가 stationary \\(\\pi\\) 로 수렴하면서 occupation rate 격차 \\((\\pi_i - \\pi_j)^2\\) 가 leading term 이 되고\n- 이 차이가 \\(t\\) 에 누적되어 \\(SD^2\\) 가 \\(t^3\\) 스케일에서 발산 (Thm C)\n- 그래프의 세밀한 구조 (ring topology 등) 가 두 노드의 stationary 격차에 묻혀 사라짐\nHST 의 “높은 곳에서 낮은 곳으로” flow + “갇히면 reset” 메커니즘이 occupation rate 를 균등 (\\(\\rho_i = 1/n\\), Thm A) 또는 pair-wise 균등 (\\(\\rho_i = \\rho_j\\), Thm B) 으로 만들고, 이 두 regime 에서만 그래프-신호 상호작용이 SD 에 기록될 수 있음을 보여준다. HST₀ → HST 의 차이는 SD 가 어느 regime 으로 가느냐 (Thm C drift vs A/B 구조 보존) 의 분기점이다."
+  },
+  {
     "objectID": "Posts/260516_1cdb82.html",
     "href": "Posts/260516_1cdb82.html",
     "title": "그래프 도메인에서의 여러가지 거리",
@@ -33,54 +75,5 @@
     "title": "그래프 도메인에서의 여러가지 거리",
     "section": "2.3 시뮬레이션 결과",
     "text": "2.3 시뮬레이션 결과\n\n2.3.1 Shortest Path\nSP 24 그래프 결과?\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2.3.2 Diffusion Distance\nDiffusion 4 t 결과\n\nt = 1t = 4t = 16t = 64\n\n\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2.3.3 Resistance Distance\nResistance 결과\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2.3.4 Biharmonic Distance\nBiharmonic 결과\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2.3.5 Hitting Time\nHitting time 결과\n\n1-11-21-31-42-12-22-32-43-13-23-33-44-14-24-34-45-15-25-36-16-26-37-17-2"
-  },
-  {
-    "objectID": "Posts/260515_d3bd76.html",
-    "href": "Posts/260515_d3bd76.html",
-    "title": "HST에서 블락이 영원히 없다면?",
-    "section": "",
-    "text": "HST의 block/reset 메커니즘이 없으면 어떻게 될까? HST₀를 정의하자: 순수 랜덤워크로 이동하고, 도착한 노드에 무조건 눈을 적립. block도 reset도 없다.\nWheel \\(W_{51}\\) (hub deg 50, leaf deg 3) 에서 uniform \\(\\mu_0\\), \\(b=0.05\\), \\(\\tau=10^9\\) 으로 비교.\n\n결과\n\nHST (Row 1):\n- 전체 \\(SD^2 \\propto t^{1.0}\\) — Thm A balanced. \\(SD^2/t \\to c\\) 유한 상수로 수렴.\n- leaf 임베딩에서 ring 구조가 선명하게 드러남.\nHST₀ (Row 2):\n- 전체 \\(SD^2 \\propto t^{3.0}\\) — Thm A 실패, Thm C drift regime. block 이 없어 occupation rate \\(\\rho_i = \\pi_i\\) (stationary) 가 되고, 이때 \\[\\frac{SD^2_{ij}}{t^3} \\to \\frac{\\bar{b}^2 (\\pi_i - \\pi_j)^2}{3}\\] 로 \\(t^3\\) 스케일에서 유한 상수 수렴한다. 즉 “발산” 은 어디까지나 Thm A 의미의 발산 (\\(SD^2/t \\to \\infty\\)) 일 뿐, \\(t^3\\) 로 나누면 정상 수렴 — HST₀ 는 Thm C drift 의 specific case (\\(\\rho_i = \\pi_i\\)) 다.\n- leaf끼리만 보면 \\(SD^2 \\propto t^{2.0}\\) — 같은 degree leaf 끼리는 \\(\\pi_i = \\pi_j\\) 라 \\((\\pi_i - \\pi_j)^2\\) leading term 이 0, 잔존 \\(\\sqrt{s}\\) noise 가 \\(t^2\\) scaling 으로 남는 Thm B intermediate.\n- 임베딩에서 구조 정보가 사라지고 hub/leaf 분리만 남음 — Resistance 거리 large-\\(n\\) 극한 (\\(R_{\\mathrm{eff}}(i, j) \\approx 1/d_i + 1/d_j\\), von Luxburg 등 2014) 의 degree-only ultrametric 과 같은 양상.\n\n\n해석\nblock 메커니즘은 단순히 “수렴 속도”를 높이는 게 아니라, Thm A/B 의 그래프 구조 정보 보존을 가능하게 하는 핵심이다. block 이 없으면:\n- 워커가 stationary \\(\\pi\\) 로 수렴하면서 occupation rate 격차 \\((\\pi_i - \\pi_j)^2\\) 가 leading term 이 되고\n- 이 차이가 \\(t\\) 에 누적되어 \\(SD^2\\) 가 \\(t^3\\) 스케일에서 발산 (Thm C)\n- 그래프의 세밀한 구조 (ring topology 등) 가 두 노드의 stationary 격차에 묻혀 사라짐\nHST 의 “높은 곳에서 낮은 곳으로” flow + “갇히면 reset” 메커니즘이 occupation rate 를 균등 (\\(\\rho_i = 1/n\\), Thm A) 또는 pair-wise 균등 (\\(\\rho_i = \\rho_j\\), Thm B) 으로 만들고, 이 두 regime 에서만 그래프-신호 상호작용이 SD 에 기록될 수 있음을 보여준다. HST₀ → HST 의 차이는 SD 가 어느 regime 으로 가느냐 (Thm C drift vs A/B 구조 보존) 의 분기점이다."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "HST Research Blog",
-    "section": "",
-    "text": "Heavy Snow Transform 연구 블로그.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nMay 19, 2026\n\n\nThm A,B,C\n\n\n최규빈 \n\n\n\n\n\n\nMay 18, 2026\n\n\nHST 실험 연구(미완성)\n\n\n최규빈 \n\n\n\n\n\n\nMay 16, 2026\n\n\n그래프 도메인에서의 여러가지 거리\n\n\n최규빈 \n\n\n\n\n\n\nMay 15, 2026\n\n\nHST에서 블락이 영원히 없다면?\n\n\n최규빈 \n\n\n\n\n\n\nMay 15, 2026\n\n\nThm A,B,C 검증\n\n\n최규빈 \n\n\n\n\n\n\nMay 14, 2026\n\n\nHST에서 snowdistance는 결국 유클리드 정보를 잊는가?\n\n\n최규빈 \n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "Posts/260514_b19d92.html",
-    "href": "Posts/260514_b19d92.html",
-    "title": "HST에서 snowdistance는 결국 유클리드 정보를 잊는가?",
-    "section": "",
-    "text": "아래는 논문의 Example 2 원본 그림이다. 위쪽이 원래 세팅 — (a) 신호 없는 thin ring, (b) \\(y=\\pm3\\) cylinder 신호 — 이고, 아래 3행이 각각 Euclidean / diffusion / snow distance 임베딩이다.\n\n이 논문 그림의 아래쪽 snow distance 세팅에서 시뮬레이션을 훨씬 더 오래 진행해 보았다. 눈량을 \\(b_t \\sim \\mathrm{Uniform}(0, 0.05)\\) 로 랜덤 추출하면서 \\(\\tau\\) 를 100번부터 100억번까지 늘려 본 것이다. 이걸 끝까지 돌려본 이유는 (1) 정말로 유클리드 거리에서 출발해서 그래프 거리로 수렴하는지 (2) 눈의양을 고정적인 \\(b\\)로 하든 \\(U(0,b)\\)로 하든 같은 결과를 주는지 확인하고 싶었기 때문.\n- \\(\\tau \\approx 47{,}000\\) (약 5만번): 논문그림과 비슷한 상황\n\n- \\(\\tau \\approx 100\\)만번 (백만번): 약 5만번의 결과와 비슷. 전체적으로 디노이징된 상태\n\n- \\(\\tau \\approx 5\\)억번: 클리프 소멸. 거의 닫힌 링.\n\n- \\(\\tau = 100\\)억번: 초기효과 소멸. (a) 와 (b) 모두 완전한 링으로 수렴.\n\n- 전체 애니메이션 (100번 \\(\\to\\) 100억번, 로그 스케일 300 프레임):\n\n\n이 결과는 눈을 \\(U(0,b)\\)에서 추출한 경우이며, 눈을 고정값 \\(b\\)로 뿌렸을 경우도 같은 결과를 얻을 수 있었음."
-  },
-  {
-    "objectID": "Posts/260515_41f2b0.html",
-    "href": "Posts/260515_41f2b0.html",
-    "title": "Thm A,B,C 검증",
-    "section": "",
-    "text": "각 노드의 장기 적립률을 \\(\\rho_i = \\lim_{t\\to\\infty} \\frac{1}{t}\\sum_{s=1}^t \\mathbf{1}\\{X_s = v_i\\}\\) 라 하자. \\(\\rho\\)가 균등한지 여부에 따라 SD의 스케일링이 달라진다."
-  },
-  {
-    "objectID": "Posts/260515_41f2b0.html#a.-그래프-구조-검증-f-0",
-    "href": "Posts/260515_41f2b0.html#a.-그래프-구조-검증-f-0",
-    "title": "Thm A,B,C 검증",
-    "section": "A. 그래프 구조 검증 (\\(f = 0\\))",
-    "text": "A. 그래프 구조 검증 (\\(f = 0\\))\n\nA.1 SD 임베딩\n각 그래프에서 시뮬 후 \\(\\sqrt{SD^2_{ij}/\\tau}\\) 의 2D MDS 임베딩.\n\n\n\nA.2 \\(SD^2/t\\) 수렴 곡선 (log-log)\n같은 24 예제의 \\(\\overline{SD^2/t}\\) (off-diagonal 평균) 를 \\(\\tau\\) 에 대해 log-log plot. 수렴하면 수평선, 발산하면 양의 기울기."
-  },
-  {
-    "objectID": "Posts/260515_41f2b0.html#b.-신호-변형-검증-f-neq-0",
-    "href": "Posts/260515_41f2b0.html#b.-신호-변형-검증-f-neq-0",
-    "title": "Thm A,B,C 검증",
-    "section": "B. 신호 변형 검증 (\\(f \\neq 0\\))",
-    "text": "B. 신호 변형 검증 (\\(f \\neq 0\\))\n\nB.1 Parity Cycle \\(C_{60}\\) — \\(f_i = (-1)^i\\)\n\n\n\nB.2 Directed Cycle \\(C_{60}\\) — \\(f = \\pm 1\\)\n\n\n\nB.3 Outlier Cylinder"
-  },
-  {
-    "objectID": "Posts/260518_4b6b92.html#신호-변형-검증-f-neq-0",
-    "href": "Posts/260518_4b6b92.html#신호-변형-검증-f-neq-0",
-    "title": "HST 실험 연구(미완성)",
-    "section": "§2. 신호 변형 검증 (\\(f \\neq 0\\))",
-    "text": "§2. 신호 변형 검증 (\\(f \\neq 0\\))\n\n2.1 Parity Cycle (S2-1)\n\n\n\n2.2 Dir Cycle ±1 (S2-2)\n\n\n\n2.3 Outlier Cyl (S2-3)"
   }
 ]
