@@ -22,7 +22,5 @@ format:
     theme: cosmo
     number-sections: false
     css: styles.css
-    toc: true
-    toc-location: right
+    toc: false
     highlight-style: github
-    toc-depth: 3
