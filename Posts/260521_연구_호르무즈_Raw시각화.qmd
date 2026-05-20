@@ -1,6 +1,6 @@
 ---
-title: 연구 ▷ 호르무즈 ▷ Raw 시각화
-author: 연
+title: 호르무즈 Raw 시각화
+author: 최규빈
 date: 05/21/2026
 draft: false
 output-file: 260521_468625.html
