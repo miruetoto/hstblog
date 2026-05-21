@@ -3,7 +3,7 @@ listing:
   contents: Posts
   sort: "date desc"
   type: table
-  categories: true
+  categories: false
   sort-ui: true
   filter-ui: true
   max-items: 999

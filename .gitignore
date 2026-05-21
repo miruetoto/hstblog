@@ -4,3 +4,7 @@
 **/-*/
 **/-*
 **/*.quarto_ipynb
+
+# Dropbox 충돌 파일
+*conflicted copy*
+*.DS_Store
