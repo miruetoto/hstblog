@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,6 +11,9 @@
 
 <title>연모양(kite)네트워크 실험 – HST Research Blog</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,15 +36,14 @@ ul.task-list li input[type="checkbox"] {
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-5b48ee63c5e90d651e19f9ead4b448f1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-b80d4d0c6b5ed6a4cb4a000b691bbaf5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -71,7 +73,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -179,7 +181,7 @@ window.Quarto = {
 <p>결과해석: 결과가 재미있음. 세 거리가 각자 다른 답을 냄.</p>
 <ul>
 <li>Spectral embedding 은 시선 1. 빨강과 가까운 점으로 보라를 골랐고, 빨강-주황 사이엔 회색점들이 흩어져 있음. 한 발자국이면 이웃, 두 발자국이면 멀다는 답임.</li>
-<li>Resistance distance — 사실 이 예제가 가장 빛나는 자리임. effective resistance 의 정의 자체가 병렬 path 가 많을수록 R_eff 가 낮아진다는 것 (<span class="math inline">\(1/R_{\text{eff}} = \sum 1/R_i\)</span>). 빨강-주황 사이 스무 갈래 회색점이 정확히 이 효과의 교과서 예제. 그래서 빨강과 주황을 단단히 묶고 보라를 멀리 떨어뜨려 시선 2 를 분명하게 그려냄. 회색점들이 사방에 퍼져 있는 건 회색 20개끼리가 거의 대등한 위치라 MDS 에서 자유도가 남아 흩어진 것으로, 해석이 <em>틀렸다</em>기보다는 <em>남은 자유도를 처리하는 방식</em>의 차이로 봐도 될 듯.</li>
+<li>Resistance distance: 빨강과 주황을 가까이 배치하였다는 것이 시선2에 가까움. 그러나 회색은 퍼져있음.</li>
 <li>HST 는 시선 2 를 가장 또렷이 그려냄. 시간이 지날수록 빨강·주황이 한 점으로 모이고, 회색점들이 그 옆에 다닥다닥 붙고, 보라가 살짝 떨어진 자리에 놓임. 회색점 자리까지 맞추는 건 셋 중 HST 뿐임. 재미있음.</li>
 </ul>
 

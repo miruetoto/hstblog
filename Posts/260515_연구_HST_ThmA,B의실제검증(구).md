@@ -2,7 +2,7 @@
 title: Thm A,B,C 검증 
 author: 최규빈
 date: 05/15/2026
-draft: false
+draft: true
 output-file: 260515_41f2b0.html
 ---
 
