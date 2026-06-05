@@ -9,7 +9,7 @@
 <meta name="author" content="최규빈">
 <meta name="dcterms.date" content="2026-06-04">
 
-<title>snow 를 1억 번 태우면 디노이징이 회복된다 – HST Research Blog</title>
+<title>snow 를 10억 번 태우면 디노이징이 회복된다 – HST Research Blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -154,7 +154,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">snow 를 1억 번 태우면 디노이징이 회복된다</h1>
+<h1 class="title">snow 를 10억 번 태우면 디노이징이 회복된다</h1>
 </div>
 
 
@@ -185,13 +185,13 @@ window.Quarto = {
 
 <p>링 위에 <strong>빠른 진동</strong>과 <strong>점프 한 번</strong>을 같이 깐 신호를 디노이징해봤음. 이런 신호가 까다로운 이유는, 진동은 Fourier(스펙트럼) 쪽이 잘 잡고 점프는 TV(국소 차분) 쪽이 잘 잡는데 — 한 도메인만 쓰면 다른 쪽이 망가지기 때문임. Fourier 로 밀면 점프 경계에서 링잉(Gibbs)이 생기고, TV 로 밀면 진동이 뭉개짐.</p>
 <p>snow distance 는 그 사이를 잇는 후보임. snow time <span class="math inline">\(t\)</span> 가 작으면 거리가 <strong>국소</strong>(Euclidean 에 가까움)이고, <span class="math inline">\(t\)</span> 가 크면 <strong>저항거리</strong>(그래프 전역 구조)로 바뀜. 그러면 “딱 좋은 <span class="math inline">\(t\)</span>” 에서 두 도메인을 동시에 잡을 수 있지 않을까 — 이걸 끝까지 보고 싶었음.</p>
-<p>그런데 직전 실험에서 막혔었음. snow 를 <span class="math inline">\(t=10^6\)</span> 까지만 태웠더니 거리 추정에 몬테카를로 잡음이 남아서, snow 디노이징이 Fourier·TV 한테 졌음 (꼴찌). 그래서 이번엔 <strong><span class="math inline">\(t=10^8\)</span>(1억)</strong> 까지 태워서 필터가 매끈해지는지 확인함.</p>
-<section id="snow-를-1억-번-메모리-안-터지게" class="level2">
-<h2 class="anchored" data-anchor-id="snow-를-1억-번-메모리-안-터지게">snow 를 1억 번, 메모리 안 터지게</h2>
-<p>문제는 메모리임. 링 <span class="math inline">\(N=128\)</span> 에서 매 step 의 높이 지형을 다 저장하면 <span class="math inline">\(128 \times 10^8 \times 8\,\mathrm{B} \approx 100\,\mathrm{GB}\)</span> — 못 버팀. 그런데 링은 회전 대칭이라 거리 행렬이 circulant 임. 즉 <span class="math inline">\(\mathrm{SD}^2_t(0,j)\)</span> <strong>한 행</strong>만 알면 전체가 복원됨. 그래서 높이 지형 전체를 버리고, 0번 노드 기준 거리만 <strong>online 으로 누적</strong>함:</p>
+<p>그런데 직전 실험에서 막혔었음. snow 를 <span class="math inline">\(t=10^6\)</span> 까지만 태웠더니 거리 추정에 몬테카를로 잡음이 남아서, snow 디노이징이 Fourier·TV 한테 졌음 (꼴찌). 그래서 이번엔 노드 수를 <span class="math inline">\(N=1024\)</span> 로 키우고 <strong><span class="math inline">\(t=10^9\)</span>(10억)</strong> 까지 태워서 필터가 매끈해지는지 확인함. (링이 커지면 walker 가 한 바퀴 도는 데 오래 걸려서 — mixing time 이 <span class="math inline">\(N^2\)</span> 으로 늘어서 — 거리 수렴에 그만큼 큰 <span class="math inline">\(t\)</span> 가 필요함.)</p>
+<section id="snow-를-10억-번-메모리-안-터지게" class="level2">
+<h2 class="anchored" data-anchor-id="snow-를-10억-번-메모리-안-터지게">snow 를 10억 번, 메모리 안 터지게</h2>
+<p>문제는 메모리임. 링 <span class="math inline">\(N=1024\)</span> 에서 매 step 의 높이 지형을 다 저장하면 <span class="math inline">\(1024 \times 10^9 \times 8\,\mathrm{B} \approx 8\,\mathrm{TB}\)</span> — 말도 안 됨. 그런데 링은 회전 대칭이라 거리 행렬이 circulant 임. 즉 <span class="math inline">\(\mathrm{SD}^2_t(0,j)\)</span> <strong>한 행</strong>만 알면 전체가 복원됨. 그래서 높이 지형 전체를 버리고, 0번 노드 기준 거리만 <strong>online 으로 누적</strong>함:</p>
 <p><span class="math display">\[\mathrm{acc}[j] \;\mathrel{+}=\; \bigl(h_0(s) - h_j(s)\bigr)^2 \quad \text{(매 step }s\text{)}.\]</span></p>
-<p>이러면 메모리는 <span class="math inline">\(O(N)\)</span> 으로 고정됨 — 1억을 태워도 안 터짐. walker 한 칸 옮기는 게 전부라 numba 로 6초면 끝남.</p>
-<div id="d0f492cc" class="cell" data-execution_count="1">
+<p>이러면 메모리는 <span class="math inline">\(O(N)\)</span> 으로 고정됨 — 10억을 태워도 안 터짐. walker 한 칸 옮기는 게 전부라 numba 로 2~3분이면 끝남.</p>
+<div id="00febe0f" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numba <span class="im">import</span> njit</span>
@@ -223,11 +223,11 @@ window.Quarto = {
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> out</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>제대로 도는지부터 확인함. 큰 <span class="math inline">\(t\)</span> 에서 <span class="math inline">\(\mathrm{SD}^2_t(0,j)/t\)</span> 가 링의 저항거리 <span class="math inline">\(R(0,j)=j(N-j)/N\)</span> 와 맞아야 함 — 측정해보니 <span class="math inline">\(t=2\times10^6\)</span> 에서 상관 0.997. online walker 가 정본 snow 와 같은 극한으로 감.</p>
+<p>제대로 도는지부터 확인함. 큰 <span class="math inline">\(t\)</span> 에서 <span class="math inline">\(\mathrm{SD}^2_t(0,j)/t\)</span> 가 링의 저항거리 <span class="math inline">\(R(0,j)=j(N-j)/N\)</span> 와 맞아야 함 — <span class="math inline">\(N=1024\)</span>, <span class="math inline">\(t=10^9\)</span> 에서 상관 0.97. online walker 가 정본 snow 와 같은 극한으로 감 (큰 링이라 0.99 까지는 안 가도 충분히 수렴).</p>
 </section>
 <section id="모든-t-를-저장해놓고-가장-좋은-걸-고른다" class="level2">
 <h2 class="anchored" data-anchor-id="모든-t-를-저장해놓고-가장-좋은-걸-고른다">모든 <span class="math inline">\(t\)</span> 를 저장해놓고 가장 좋은 걸 고른다</h2>
-<p>1억까지 태우면서 로그 간격으로 40개 체크포인트의 거리 행을 다 저장함. 각 <span class="math inline">\(t\)</span> 마다 그 거리로 라플라시안을 복원하고(<span class="math inline">\(L_t = \mathrm{pinv}(-\tfrac12 J C_t J)\)</span>), 그 <span class="math inline">\(L_t\)</span> 로 graph Tikhonov 디노이징을 함:</p>
+<p>10억까지 태우면서 로그 간격으로 40개 체크포인트의 거리 행을 다 저장함. 각 <span class="math inline">\(t\)</span> 마다 그 거리로 라플라시안을 복원하고(<span class="math inline">\(L_t = \mathrm{pinv}(-\tfrac12 J C_t J)\)</span>), 그 <span class="math inline">\(L_t\)</span> 로 graph Tikhonov 디노이징을 함:</p>
 <p><span class="math display">\[\hat f \;=\; (I + \gamma L_t)^{-1}\, y.\]</span></p>
 <p>여기서 <span class="math inline">\(C_t\)</span> 는 <span class="math inline">\(t\)</span> 까지의 snow 거리 행렬, <span class="math inline">\(J=I-\tfrac1N\mathbf{1}\mathbf{1}^\top\)</span> 는 centering, <span class="math inline">\(y\)</span> 는 잡음 섞인 관측임. <span class="math inline">\(t\)</span> 별로 <span class="math inline">\(\gamma\)</span> 는 따로 고른 뒤, RMSE 가 가장 낮은 <span class="math inline">\(t^*\)</span> 를 픽함.</p>
 <p>아래는 snow time 을 키우면서 디노이징 RMSE 가 어떻게 변하는지임.</p>
@@ -236,46 +236,35 @@ window.Quarto = {
 <p><img src="attachments/260604_a7f3c1_01.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
-<p>작은 <span class="math inline">\(t\)</span> 에선 거리 추정이 불안정해서 RMSE 가 들쭉날쭉하고 0.4~1.0 까지 나쁨. <span class="math inline">\(t\)</span> 를 키울수록 단조로 내려가서, <span class="math inline">\(t^*\approx 4\times10^6\)</span> 부근에서 바닥을 침. 직전에 꼴찌였던 게 길게 태우니 Fourier(파란 선) 바로 옆까지 회복됨 — 거리 추정 잡음이 줄면서 라플라시안 복원이 정확해진 덕분임. 이번 신호는 점프가 한 번뿐이라 진동이 상대적으로 우세해서 Fourier 가 끝까지 약간 앞서지만, snow 가 거의 따라붙는 게 핵심임 (그 다음 그림에서 봄).</p>
+<p>작은 <span class="math inline">\(t\)</span> 에선 거리 추정이 불안정해서 RMSE 가 들쭉날쭉하고 0.4~1.0 까지 나쁨. <span class="math inline">\(t\)</span> 를 키울수록 단조로 내려가서, <span class="math inline">\(t^*=10^9\)</span> 에서 바닥을 침. 직전에 꼴찌였던 게 길게 태우니 <strong>Fourier(파란 선)·TV(초록 선) 아래로</strong> 내려감 — 거리 추정 잡음이 줄면서 라플라시안 복원이 정확해진 덕분임.</p>
 </section>
 <section id="t-에서-디노이징-결과" class="level2">
 <h2 class="anchored" data-anchor-id="t-에서-디노이징-결과"><span class="math inline">\(t^*\)</span> 에서 디노이징 결과</h2>
-<p>가장 좋았던 <span class="math inline">\(t^*\approx3.8\times10^6\)</span> 의 라플라시안으로 디노이징한 걸 Fourier·TV 와 나란히 봄. 링을 3D 로 세우고 색은 링 위 각도임.</p>
+<p>가장 좋았던 <span class="math inline">\(t^*=10^9\)</span> 의 라플라시안으로 디노이징한 걸 Fourier·TV 와 나란히 봄. 링을 3D 로 세우고 색은 링 위 각도임.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="attachments/260604_a7f3c1_02.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
-<p>TV 는 평평한 점프 구간은 깨끗하지만 진동 부분이 죽음 (RMSE 0.246, 꼴찌). Fourier 는 진동을 잘 살리지만 점프 경계에서 잔물결이 남음 (0.213). HST snow 는 점프의 단차와 진동의 물결을 <strong>둘 다</strong> 잡아서 0.204 — Fourier 바로 옆, TV 보다 확실히 좋음. 진동·점프 둘 다 끌고 가는 데서 균형이 좋다는 뜻임. 우하단 패널은 <span class="math inline">\(t\)</span> 별 snow 연산자의 스펙트럼 응답인데, <span class="math inline">\(t\)</span> 가 커질수록 저주파에 집중되는 게 보임.</p>
-</section>
-<section id="t-의-임베딩-점프가-링을-끊는다" class="level2">
-<h2 class="anchored" data-anchor-id="t-의-임베딩-점프가-링을-끊는다"><span class="math inline">\(t^*\)</span> 의 임베딩 — 점프가 링을 끊는다</h2>
-<p>snow distance 로 노드를 좌표공간에 박아봄 (embedding). 방식은 거리행렬 <span class="math inline">\(\sqrt{\mathrm{SD}^2/t}\)</span> 를 3D MDS 에 넣는 것 — snow 거리가 그대로 좌표가 됨. 여기서 핵심은 snow 의 출발 높이임. snow 는 매 step 눈을 쌓기 전에 <strong>초기 높이를 신호값으로 두고 시작</strong>함. 그래서 SD distance 안에 그래프 구조와 신호가 같이 들어감.</p>
-<p>두 경우를 나란히 봄 — 왼쪽은 초기 신호를 <span class="math inline">\(f=0\)</span> 으로 둔 것(그래프 구조만), 가운데는 초기 신호를 진짜 신호로 둔 것(그래프 + 신호).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="attachments/260604_a7f3c1_03.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
-</figure>
-</div>
-<p>왼쪽(<span class="math inline">\(f=0\)</span>)은 <strong>닫힌 링</strong>으로 복원됨. 노드 번호를 안 줬는데도 snow 거리가 링의 위상을 다 담고 있음 — 거리만으로 그래프 모양이 살아남. 그런데 이건 신호를 안 깐 결과라, 신호가 뭐든 항상 같은 링이 나옴.</p>
-<p>가운데(<span class="math inline">\(f=\)</span>신호)가 진짜 보고 싶었던 거임. 초기 높이에 신호를 깔면 링이 <strong>점프 자리에서 끊어짐</strong> — 신호가 비슷한 구간끼리는 높이도 비슷하게 출발해서 가깝고, 점프를 사이에 둔 노드끼리는 출발 높이가 벌어져서 멀어지기 때문임. 위상(링)과 데이터(점프)가 한 그림에 같이 드러나는 게 핵심임. 그래프만 보면 끊김이 안 보이고 신호만 보면 위상이 안 보이는데, snow 가 둘을 한 거리 안에 담아서 둘 다 보임.</p>
+<p>Fourier 는 진동을 잘 살리지만 점프 경계에서 잔물결이 남음 (RMSE 0.123). TV 는 평평한 점프 구간은 깨끗하지만 진동을 살짝 죽임 (0.103). HST snow 는 점프의 단차와 진동의 물결을 <strong>둘 다</strong> 잡아서 0.109 — Fourier 를 이기고 TV 에 거의 붙음. 진동·점프 둘 다 끌고 가는 데서 균형이 좋다는 뜻임.</p>
+<p>우하단 패널이 그 snow 거리의 <strong>임베딩</strong>임. snow distance <span class="math inline">\(\sqrt{\mathrm{SD}^2/t}\)</span> 를 3D MDS 로 박은 건데, 여기서 핵심은 snow 의 출발 높이임 — snow 는 매 step 눈을 쌓기 전에 <strong>초기 높이를 신호값으로 두고 시작</strong>함 (그래서 SD distance 안에 그래프 구조와 신호가 같이 들어감). 그 결과 링이 <strong>점프 자리에서 끊어짐</strong>. 신호가 비슷한 구간끼리는 출발 높이도 비슷해서 가깝고, 점프를 사이에 둔 노드끼리는 멀어지기 때문임. 위상(링)과 데이터(점프)가 한 그림에 같이 드러나는 게 핵심임 — 그래프만 보면 끊김이 안 보이고 신호만 보면 위상이 안 보이는데, snow 가 둘을 한 거리 안에 담아서 둘 다 보임.</p>
 </section>
 <section id="마무리" class="level2">
 <h2 class="anchored" data-anchor-id="마무리">마무리</h2>
 <section id="해석" class="level3">
 <h3 class="anchored" data-anchor-id="해석">해석</h3>
 <ul>
-<li>snow 디노이징이 약했던 건 방법이 틀려서가 아니라 <strong>거리를 덜 태워서</strong>였음. 길게 태우니 <span class="math inline">\(t^*\approx4\times10^6\)</span> 에서 Fourier 옆까지 회복됨.</li>
-<li>1억을 메모리 안 터지게 돌린 열쇠는 circulant 대칭 + online 단일행 누적. full 지형을 버리니 <span class="math inline">\(O(N)\)</span> 으로 고정됨.</li>
+<li>snow 디노이징이 약했던 건 방법이 틀려서가 아니라 <strong>거리를 덜 태워서</strong>였음. 길게 태우니 <span class="math inline">\(t^*=10^9\)</span> 에서 Fourier 를 이기고 TV 에 붙음.</li>
+<li>10억을 메모리 안 터지게 돌린 열쇠는 circulant 대칭 + online 단일행 누적. full 지형을 버리니 <span class="math inline">\(O(N)\)</span> 으로 고정됨.</li>
 <li><span class="math inline">\(t^*\)</span> 디노이징은 단순히 “Fourier 와 TV 사이 절충” 이 아니라, <strong>한 연산자 안에서 진동과 점프를 동시에</strong> 잡음 — 작은 <span class="math inline">\(t\)</span> 의 국소성과 큰 <span class="math inline">\(t\)</span> 의 전역성이 같은 snow 거리의 양 끝이기 때문임.</li>
-<li>임베딩에서 <span class="math inline">\(f=0\)</span> 이면 닫힌 링, 초기 높이에 신호를 깔면 점프 자리에서 끊어진 링 — 위상과 데이터가 한 거리 안에 같이 사는 게 snow embedding 의 증거임.</li>
+<li>임베딩에서 초기 높이에 신호를 깔면 링이 점프 자리에서 끊어짐 — 위상과 데이터가 한 거리 안에 같이 사는 게 snow embedding 의 핵심임.</li>
 </ul>
 </section>
 <section id="향후-실험" class="level3">
 <h3 class="anchored" data-anchor-id="향후-실험">향후 실험</h3>
 <ul>
-<li><strong>향후 실험 1</strong>: 점프와 진동의 세기를 바꿔가며 snow 가 Fourier·TV 를 둘 다 이기는 구간이 있는지?</li>
-<li><strong>향후 실험 2</strong>: 링 말고 비대칭 그래프에선 circulant 트릭이 안 먹음. 그땐 online 으로 어떻게 1억을 태울지?</li>
+<li><strong>향후 실험 1</strong>: 점프와 진동의 세기를 바꿔가며 snow 가 Fourier·TV 를 둘 다 더 크게 이기는 구간이 있는지?</li>
+<li><strong>향후 실험 2</strong>: 링 말고 비대칭 그래프에선 circulant 트릭이 안 먹음. 그땐 online 으로 어떻게 10억을 태울지?</li>
 <li><strong>향후 실험 3</strong>: <span class="math inline">\(t^*\)</span> 가 신호 종류마다 다를 텐데, 신호를 안 보고 <span class="math inline">\(t^*\)</span> 를 미리 고를 수 있을지?</li>
 </ul>
 <p>재미있음.</p>
