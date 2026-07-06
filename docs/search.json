@@ -14,6 +14,13 @@
     "text": "아래는 논문의 Example 2 원본 그림이다. 위쪽이 원래 세팅 — (a) 신호 없는 thin ring, (b) \\(y=\\pm3\\) cylinder 신호 — 이고, 아래 3행이 각각 Euclidean / diffusion / snow distance 임베딩이다.\n\n이 논문 그림의 아래쪽 snow distance 세팅에서 시뮬레이션을 훨씬 더 오래 진행해 보았다. 눈량을 \\(b_t \\sim \\mathrm{Uniform}(0, 0.05)\\) 로 랜덤 추출하면서 \\(\\tau\\) 를 100번부터 100억번까지 늘려 본 것이다. 이걸 끝까지 돌려본 이유는 (1) 정말로 유클리드 거리에서 출발해서 그래프 거리로 수렴하는지 (2) 눈의양을 고정적인 \\(b\\)로 하든 \\(U(0,b)\\)로 하든 같은 결과를 주는지 확인하고 싶었기 때문.\n- \\(\\tau \\approx 47{,}000\\) (약 5만번): 논문그림과 비슷한 상황\n\n- \\(\\tau \\approx 100\\)만번 (백만번): 약 5만번의 결과와 비슷. 전체적으로 디노이징된 상태\n\n- \\(\\tau \\approx 5\\)억번: 클리프 소멸. 거의 닫힌 링.\n\n- \\(\\tau = 100\\)억번: 초기효과 소멸. (a) 와 (b) 모두 완전한 링으로 수렴.\n\n- 전체 애니메이션 (100번 \\(\\to\\) 100억번, 로그 스케일 300 프레임):\n\n\n이 결과는 눈을 \\(U(0,b)\\)에서 추출한 경우이며, 눈을 고정값 \\(b\\)로 뿌렸을 경우도 같은 결과를 얻을 수 있었음."
   },
   {
+    "objectID": "Posts/260706_hstproof.html",
+    "href": "Posts/260706_hstproof.html",
+    "title": "HST 증명 (오희석 교수님 공유용)",
+    "section": "",
+    "text": "Heavy-Snow Transform (HST) 의 정본 증명을 공유합니다. 아래에서 바로 열람하거나 PDF로 다운로드 하실 수 있습니다."
+  },
+  {
     "objectID": "Posts/260528_aaab2c.html",
     "href": "Posts/260528_aaab2c.html",
     "title": "AAA vs BAB",
@@ -40,6 +47,41 @@
     "title": "호르무즈 Raw 시각화",
     "section": "",
     "text": "전쟁 전 (파랑), 보복기 (주황)\n\n\n\n\n\n선종별로 보면 cargo · tanker · gas 모양이 거의 같다. 선종은 경로를 가르는 변수가 아닌 것 같음.\n\n\n\n\n\n속도 구간이 항로를 꽤 잘 가른다. 0–5 km/h 는 한곳에 모여있고 (정박·대기), 15–25 가 메인 다발, 25+ 는 적고 곧게 통과.\n\n\n\n\n\n시기 × 선종 2 × 3 으로 펼치면 아래 줄 (보복기) 이 1/10 수준. 셋 다 약간씩 이란 쪽 새 항로가 생긴 게 보이지만 표본이 적다.\n\n\n\n\n\n시기 × 속도 2 × 4 가 본 글에서 가장 의미있는듯. 보복기엔 25+ km/h 트랙이 거의 없음 (모두 천천히 다님, 그런데 표본이 적음)"
+  },
+  {
+    "objectID": "Posts/260604_a7f3c1.html",
+    "href": "Posts/260604_a7f3c1.html",
+    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
+    "section": "",
+    "text": "링 위에 빠른 진동과 점프 한 번을 같이 깐 신호를 디노이징해봤음. 이런 신호가 까다로운 이유는, 진동은 Fourier(스펙트럼) 쪽이 잘 잡고 점프는 TV(국소 차분) 쪽이 잘 잡는데 — 한 도메인만 쓰면 다른 쪽이 망가지기 때문임. Fourier 로 밀면 점프 경계에서 링잉(Gibbs)이 생기고, TV 로 밀면 진동이 뭉개짐.\nsnow distance 는 그 사이를 잇는 후보임. snow time \\(t\\) 가 작으면 거리가 국소(Euclidean 에 가까움)이고, \\(t\\) 가 크면 저항거리(그래프 전역 구조)로 바뀜. 그러면 “딱 좋은 \\(t\\)” 에서 두 도메인을 동시에 잡을 수 있지 않을까 — 이걸 끝까지 보고 싶었음.\n그런데 직전 실험에서 막혔었음. snow 를 \\(t=10^6\\) 까지만 태웠더니 거리 추정에 몬테카를로 잡음이 남아서, snow 디노이징이 Fourier·TV 한테 졌음 (꼴찌). 그래서 이번엔 노드 수를 \\(N=1024\\) 로 키우고 \\(t=10^9\\)(10억) 까지 태워서 필터가 매끈해지는지 확인함. (링이 커지면 walker 가 한 바퀴 도는 데 오래 걸려서 — mixing time 이 \\(N^2\\) 으로 늘어서 — 거리 수렴에 그만큼 큰 \\(t\\) 가 필요함.)"
+  },
+  {
+    "objectID": "Posts/260604_a7f3c1.html#snow-를-10억-번-메모리-안-터지게",
+    "href": "Posts/260604_a7f3c1.html#snow-를-10억-번-메모리-안-터지게",
+    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
+    "section": "snow 를 10억 번, 메모리 안 터지게",
+    "text": "snow 를 10억 번, 메모리 안 터지게\n문제는 메모리임. 링 \\(N=1024\\) 에서 매 step 의 높이 지형을 다 저장하면 \\(1024 \\times 10^9 \\times 8\\,\\mathrm{B} \\approx 8\\,\\mathrm{TB}\\) — 말도 안 됨. 그런데 링은 회전 대칭이라 거리 행렬이 circulant 임. 즉 \\(\\mathrm{SD}^2_t(0,j)\\) 한 행만 알면 전체가 복원됨. 그래서 높이 지형 전체를 버리고, 0번 노드 기준 거리만 online 으로 누적함:\n\\[\\mathrm{acc}[j] \\;\\mathrel{+}=\\; \\bigl(h_0(s) - h_j(s)\\bigr)^2 \\quad \\text{(매 step }s\\text{)}.\\]\n이러면 메모리는 \\(O(N)\\) 으로 고정됨 — 10억을 태워도 안 터짐. walker 한 칸 옮기는 게 전부라 numba 로 2~3분이면 끝남.\n\n\nCode\nfrom numba import njit\nimport numpy as np\n\n@njit(cache=True)\ndef snow_online_ring(N, T_max, b, seed, chk):\n    np.random.seed(seed)\n    h = np.zeros(N); acc = np.zeros(N)            # 높이 + 거리 누적 (한 행)\n    out = np.zeros((chk.shape[0], N)); ci = 0\n    Z = T_max + 1; cur = -1; maxflow = 0          # 첫 step 강제 Fall\n    for step in range(1, T_max + 1):\n        if Z &gt;= maxflow:                          # Fall: 새 라운드\n            maxflow = N + np.random.randint(0, N + 1)\n            nxt = np.random.randint(0, N); h[nxt] += b*np.random.random(); Z = 0\n        else:\n            left = (cur-1) % N; right = (cur+1) % N\n            ds0 = h[cur] &gt;= h[left]; ds1 = h[cur] &gt;= h[right]   # downstream 만\n            bb = b*np.random.random()\n            if ds0 and ds1: nxt = left if np.random.random() &lt; 0.5 else right; h[nxt]+=bb; Z+=1\n            elif ds0: nxt = left;  h[nxt]+=bb; Z+=1\n            elif ds1: nxt = right; h[nxt]+=bb; Z+=1\n            else:     nxt = cur;   h[cur]+=bb; Z = maxflow      # block (제자리)\n        cur = nxt\n        h0 = h[0]\n        for j in range(N): d = h0 - h[j]; acc[j] += d*d         # online 누적\n        if ci &lt; chk.shape[0] and step == chk[ci]:\n            out[ci] = acc; ci += 1\n    return out\n\n\n제대로 도는지부터 확인함. 큰 \\(t\\) 에서 \\(\\mathrm{SD}^2_t(0,j)/t\\) 가 링의 저항거리 \\(R(0,j)=j(N-j)/N\\) 와 맞아야 함 — \\(N=1024\\), \\(t=10^9\\) 에서 상관 0.97. online walker 가 정본 snow 와 같은 극한으로 감 (큰 링이라 0.99 까지는 안 가도 충분히 수렴)."
+  },
+  {
+    "objectID": "Posts/260604_a7f3c1.html#모든-t-를-저장해놓고-가장-좋은-걸-고른다",
+    "href": "Posts/260604_a7f3c1.html#모든-t-를-저장해놓고-가장-좋은-걸-고른다",
+    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
+    "section": "모든 \\(t\\) 를 저장해놓고 가장 좋은 걸 고른다",
+    "text": "모든 \\(t\\) 를 저장해놓고 가장 좋은 걸 고른다\n10억까지 태우면서 로그 간격으로 40개 체크포인트의 거리 행을 다 저장함. 각 \\(t\\) 마다 그 거리로 라플라시안을 복원하고(\\(L_t = \\mathrm{pinv}(-\\tfrac12 J C_t J)\\)), 그 \\(L_t\\) 로 graph Tikhonov 디노이징을 함:\n\\[\\hat f \\;=\\; (I + \\gamma L_t)^{-1}\\, y.\\]\n여기서 \\(C_t\\) 는 \\(t\\) 까지의 snow 거리 행렬, \\(J=I-\\tfrac1N\\mathbf{1}\\mathbf{1}^\\top\\) 는 centering, \\(y\\) 는 잡음 섞인 관측임. \\(t\\) 별로 \\(\\gamma\\) 는 따로 고른 뒤, RMSE 가 가장 낮은 \\(t^*\\) 를 픽함.\n아래는 snow time 을 키우면서 디노이징 RMSE 가 어떻게 변하는지임.\n\n\n\n\n\n작은 \\(t\\) 에선 거리 추정이 불안정해서 RMSE 가 들쭉날쭉하고 0.4~1.0 까지 나쁨. \\(t\\) 를 키울수록 단조로 내려가서, \\(t^*=10^9\\) 에서 바닥을 침. 직전에 꼴찌였던 게 길게 태우니 Fourier(파란 선)·TV(초록 선) 아래로 내려감 — 거리 추정 잡음이 줄면서 라플라시안 복원이 정확해진 덕분임."
+  },
+  {
+    "objectID": "Posts/260604_a7f3c1.html#t-에서-디노이징-결과",
+    "href": "Posts/260604_a7f3c1.html#t-에서-디노이징-결과",
+    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
+    "section": "\\(t^*\\) 에서 디노이징 결과",
+    "text": "\\(t^*\\) 에서 디노이징 결과\n가장 좋았던 \\(t^*=10^9\\) 의 라플라시안으로 디노이징한 걸 Fourier·TV 와 나란히 봄. 링을 3D 로 세우고 색은 링 위 각도임.\n\n\n\n\n\nFourier 는 진동을 잘 살리지만 점프 경계에서 잔물결이 남음 (RMSE 0.123). TV 는 평평한 점프 구간은 깨끗하지만 진동을 살짝 죽임 (0.103). HST snow 는 점프의 단차와 진동의 물결을 둘 다 잡아서 0.109 — Fourier 를 이기고 TV 에 거의 붙음. 진동·점프 둘 다 끌고 가는 데서 균형이 좋다는 뜻임.\n우하단 패널이 그 snow 거리의 임베딩임. snow distance \\(\\sqrt{\\mathrm{SD}^2/t}\\) 를 3D MDS 로 박은 건데, 여기서 핵심은 snow 의 출발 높이임 — snow 는 매 step 눈을 쌓기 전에 초기 높이를 신호값으로 두고 시작함 (그래서 SD distance 안에 그래프 구조와 신호가 같이 들어감). 그 결과 링이 점프 자리에서 끊어짐. 신호가 비슷한 구간끼리는 출발 높이도 비슷해서 가깝고, 점프를 사이에 둔 노드끼리는 멀어지기 때문임. 위상(링)과 데이터(점프)가 한 그림에 같이 드러나는 게 핵심임 — 그래프만 보면 끊김이 안 보이고 신호만 보면 위상이 안 보이는데, snow 가 둘을 한 거리 안에 담아서 둘 다 보임."
+  },
+  {
+    "objectID": "Posts/260604_a7f3c1.html#마무리",
+    "href": "Posts/260604_a7f3c1.html#마무리",
+    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
+    "section": "마무리",
+    "text": "마무리\n\n해석\n\nsnow 디노이징이 약했던 건 방법이 틀려서가 아니라 거리를 덜 태워서였음. 길게 태우니 \\(t^*=10^9\\) 에서 Fourier 를 이기고 TV 에 붙음.\n10억을 메모리 안 터지게 돌린 열쇠는 circulant 대칭 + online 단일행 누적. full 지형을 버리니 \\(O(N)\\) 으로 고정됨.\n\\(t^*\\) 디노이징은 단순히 “Fourier 와 TV 사이 절충” 이 아니라, 한 연산자 안에서 진동과 점프를 동시에 잡음 — 작은 \\(t\\) 의 국소성과 큰 \\(t\\) 의 전역성이 같은 snow 거리의 양 끝이기 때문임.\n임베딩에서 초기 높이에 신호를 깔면 링이 점프 자리에서 끊어짐 — 위상과 데이터가 한 거리 안에 같이 사는 게 snow embedding 의 핵심임.\n\n\n\n향후 실험\n\n향후 실험 1: 점프와 진동의 세기를 바꿔가며 snow 가 Fourier·TV 를 둘 다 더 크게 이기는 구간이 있는지?\n향후 실험 2: 링 말고 비대칭 그래프에선 circulant 트릭이 안 먹음. 그땐 online 으로 어떻게 10억을 태울지?\n향후 실험 3: \\(t^*\\) 가 신호 종류마다 다를 텐데, 신호를 안 보고 \\(t^*\\) 를 미리 고를 수 있을지?\n\n재미있음."
   },
   {
     "objectID": "index.html",
@@ -89,75 +131,5 @@
     "title": "목걸이모양 네트워크 실험 (교수님 아이디어)",
     "section": "Discussion",
     "text": "Discussion\n바퀴모양과 다르게 별표가 떨어져나감.\n이번 실험 전에 (1)과 (2)의 생각이 동시에 들었음. (1) 바퀴는 스타가 중앙에 있어서 도망가지 않았는데, 이건 외부에 있는 느낌이라 떨어져 나가지 않을까? (2) 떨어져 나가더라도 그래도 파란색 점이랑 좀 가깝지 않을까? 그렇다면 원형 모양을 찌그러뜨리지 않을까?\n결과를 돌려보니 링의 연결이 너무 강하게 느껴짐. 굳이 비유하면 링과 스타가 연결된 하나의 엣지는 너무 작은 오솔길 느낌임.\n향후 실험 1: 스타와 링 중 하나만 연결하는 게 아니고 한 10~20% 쯤 연결해버리면 스타가 링을 당기지 않을까? 하는 생각이 듦. 언제부터 링의 구조를 붕괴시킬까?도 재미있는 포인트같음.\n향후 실험 2: 지금은 스타-링이었는데, 링-링 이런 구조도 재미있을 것 같음 (두 개의 그룹이 분리되지 않을까? 하는 생각이 듭니다). 오솔길 개념 재미있음 (길이 있지만 없는 느낌)."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html",
-    "href": "Posts/260604_a7f3c1.html",
-    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
-    "section": "",
-    "text": "링 위에 빠른 진동과 점프 한 번을 같이 깐 신호를 디노이징해봤음. 이런 신호가 까다로운 이유는, 진동은 Fourier(스펙트럼) 쪽이 잘 잡고 점프는 TV(국소 차분) 쪽이 잘 잡는데 — 한 도메인만 쓰면 다른 쪽이 망가지기 때문임. Fourier 로 밀면 점프 경계에서 링잉(Gibbs)이 생기고, TV 로 밀면 진동이 뭉개짐.\nsnow distance 는 그 사이를 잇는 후보임. snow time \\(t\\) 가 작으면 거리가 국소(Euclidean 에 가까움)이고, \\(t\\) 가 크면 저항거리(그래프 전역 구조)로 바뀜. 그러면 “딱 좋은 \\(t\\)” 에서 두 도메인을 동시에 잡을 수 있지 않을까 — 이걸 끝까지 보고 싶었음.\n그런데 직전 실험에서 막혔었음. snow 를 \\(t=10^6\\) 까지만 태웠더니 거리 추정에 몬테카를로 잡음이 남아서, snow 디노이징이 Fourier·TV 한테 졌음 (꼴찌). 그래서 이번엔 노드 수를 \\(N=1024\\) 로 키우고 \\(t=10^9\\)(10억) 까지 태워서 필터가 매끈해지는지 확인함. (링이 커지면 walker 가 한 바퀴 도는 데 오래 걸려서 — mixing time 이 \\(N^2\\) 으로 늘어서 — 거리 수렴에 그만큼 큰 \\(t\\) 가 필요함.)"
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#snow-를-1억-번-메모리-안-터지게",
-    "href": "Posts/260604_a7f3c1.html#snow-를-1억-번-메모리-안-터지게",
-    "title": "snow 를 1억 번 태우면 디노이징이 회복된다",
-    "section": "snow 를 1억 번, 메모리 안 터지게",
-    "text": "snow 를 1억 번, 메모리 안 터지게\n문제는 메모리임. 링 \\(N=128\\) 에서 매 step 의 높이 지형을 다 저장하면 \\(128 \\times 10^8 \\times 8\\,\\mathrm{B} \\approx 100\\,\\mathrm{GB}\\) — 못 버팀. 그런데 링은 회전 대칭이라 거리 행렬이 circulant 임. 즉 \\(\\mathrm{SD}^2_t(0,j)\\) 한 행만 알면 전체가 복원됨. 그래서 높이 지형 전체를 버리고, 0번 노드 기준 거리만 online 으로 누적함:\n\\[\\mathrm{acc}[j] \\;\\mathrel{+}=\\; \\bigl(h_0(s) - h_j(s)\\bigr)^2 \\quad \\text{(매 step }s\\text{)}.\\]\n이러면 메모리는 \\(O(N)\\) 으로 고정됨 — 1억을 태워도 안 터짐. walker 한 칸 옮기는 게 전부라 numba 로 6초면 끝남.\n\n\nCode\nfrom numba import njit\nimport numpy as np\n\n@njit(cache=True)\ndef snow_online_ring(N, T_max, b, seed, chk):\n    np.random.seed(seed)\n    h = np.zeros(N); acc = np.zeros(N)            # 높이 + 거리 누적 (한 행)\n    out = np.zeros((chk.shape[0], N)); ci = 0\n    Z = T_max + 1; cur = -1; maxflow = 0          # 첫 step 강제 Fall\n    for step in range(1, T_max + 1):\n        if Z &gt;= maxflow:                          # Fall: 새 라운드\n            maxflow = N + np.random.randint(0, N + 1)\n            nxt = np.random.randint(0, N); h[nxt] += b*np.random.random(); Z = 0\n        else:\n            left = (cur-1) % N; right = (cur+1) % N\n            ds0 = h[cur] &gt;= h[left]; ds1 = h[cur] &gt;= h[right]   # downstream 만\n            bb = b*np.random.random()\n            if ds0 and ds1: nxt = left if np.random.random() &lt; 0.5 else right; h[nxt]+=bb; Z+=1\n            elif ds0: nxt = left;  h[nxt]+=bb; Z+=1\n            elif ds1: nxt = right; h[nxt]+=bb; Z+=1\n            else:     nxt = cur;   h[cur]+=bb; Z = maxflow      # block (제자리)\n        cur = nxt\n        h0 = h[0]\n        for j in range(N): d = h0 - h[j]; acc[j] += d*d         # online 누적\n        if ci &lt; chk.shape[0] and step == chk[ci]:\n            out[ci] = acc; ci += 1\n    return out\n\n\n제대로 도는지부터 확인함. 큰 \\(t\\) 에서 \\(\\mathrm{SD}^2_t(0,j)/t\\) 가 링의 저항거리 \\(R(0,j)=j(N-j)/N\\) 와 맞아야 함 — 측정해보니 \\(t=2\\times10^6\\) 에서 상관 0.997. online walker 가 정본 snow 와 같은 극한으로 감."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#모든-t-를-저장해놓고-가장-좋은-걸-고른다",
-    "href": "Posts/260604_a7f3c1.html#모든-t-를-저장해놓고-가장-좋은-걸-고른다",
-    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
-    "section": "모든 \\(t\\) 를 저장해놓고 가장 좋은 걸 고른다",
-    "text": "모든 \\(t\\) 를 저장해놓고 가장 좋은 걸 고른다\n10억까지 태우면서 로그 간격으로 40개 체크포인트의 거리 행을 다 저장함. 각 \\(t\\) 마다 그 거리로 라플라시안을 복원하고(\\(L_t = \\mathrm{pinv}(-\\tfrac12 J C_t J)\\)), 그 \\(L_t\\) 로 graph Tikhonov 디노이징을 함:\n\\[\\hat f \\;=\\; (I + \\gamma L_t)^{-1}\\, y.\\]\n여기서 \\(C_t\\) 는 \\(t\\) 까지의 snow 거리 행렬, \\(J=I-\\tfrac1N\\mathbf{1}\\mathbf{1}^\\top\\) 는 centering, \\(y\\) 는 잡음 섞인 관측임. \\(t\\) 별로 \\(\\gamma\\) 는 따로 고른 뒤, RMSE 가 가장 낮은 \\(t^*\\) 를 픽함.\n아래는 snow time 을 키우면서 디노이징 RMSE 가 어떻게 변하는지임.\n\n\n\n\n\n작은 \\(t\\) 에선 거리 추정이 불안정해서 RMSE 가 들쭉날쭉하고 0.4~1.0 까지 나쁨. \\(t\\) 를 키울수록 단조로 내려가서, \\(t^*=10^9\\) 에서 바닥을 침. 직전에 꼴찌였던 게 길게 태우니 Fourier(파란 선)·TV(초록 선) 아래로 내려감 — 거리 추정 잡음이 줄면서 라플라시안 복원이 정확해진 덕분임."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#t108-에서-디노이징-결과",
-    "href": "Posts/260604_a7f3c1.html#t108-에서-디노이징-결과",
-    "title": "snow 를 1억 번 태우면 디노이징이 회복된다",
-    "section": "\\(t^*=10^8\\) 에서 디노이징 결과",
-    "text": "\\(t^*=10^8\\) 에서 디노이징 결과\n가장 좋았던 \\(t^*=10^8\\) 의 라플라시안으로 디노이징한 걸 Fourier·TV 와 나란히 봄. 링을 3D 로 세우고 색은 링 위 각도임.\n\n\n\n\n\nFourier 는 점프 경계에서 잔물결이 남고(링잉), TV 는 평평한 점프 구간은 깨끗하지만 진동 부분이 살짝 죽음. HST snow 는 점프의 평평함과 진동의 물결을 둘 다 살림 — RMSE 0.192 로 Fourier(0.252) 보다 좋고 TV(0.196) 와 동급. 우하단 패널은 \\(t\\) 별 snow 연산자의 스펙트럼 응답인데, \\(t\\) 가 커질수록 저주파에 집중되는 게 보임."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#t-의-임베딩-링이-원으로-돌아온다",
-    "href": "Posts/260604_a7f3c1.html#t-의-임베딩-링이-원으로-돌아온다",
-    "title": "snow 를 1억 번 태우면 디노이징이 회복된다",
-    "section": "\\(t^*\\) 의 임베딩 — 링이 원으로 돌아온다",
-    "text": "\\(t^*\\) 의 임베딩 — 링이 원으로 돌아온다\n같은 \\(t^*\\) 의 snow 연산자 \\(B_{t^*}=-\\tfrac12 J C_{t^*} J\\) 를 고유분해해서, 큰 고유값 쪽 고유벡터 두 개로 노드를 찍어봄. 이게 snow embedding 임.\n\n\n\n\n\n거리만 줬는데 링이 완벽한 원으로 복원됨 (왼쪽). 색이 무지개 순서대로 원을 한 바퀴 도는 게 핵심 — 노드 번호 정보를 안 줬는데도 snow 거리가 링의 위상을 그대로 담고 있다는 뜻임. 1억을 태운 거리가 저항거리에 충분히 수렴해서, 그 연산자의 스펙트럼이 링의 Fourier 모드를 정확히 재현한 셈임."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#마무리",
-    "href": "Posts/260604_a7f3c1.html#마무리",
-    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
-    "section": "마무리",
-    "text": "마무리\n\n해석\n\nsnow 디노이징이 약했던 건 방법이 틀려서가 아니라 거리를 덜 태워서였음. 길게 태우니 \\(t^*=10^9\\) 에서 Fourier 를 이기고 TV 에 붙음.\n10억을 메모리 안 터지게 돌린 열쇠는 circulant 대칭 + online 단일행 누적. full 지형을 버리니 \\(O(N)\\) 으로 고정됨.\n\\(t^*\\) 디노이징은 단순히 “Fourier 와 TV 사이 절충” 이 아니라, 한 연산자 안에서 진동과 점프를 동시에 잡음 — 작은 \\(t\\) 의 국소성과 큰 \\(t\\) 의 전역성이 같은 snow 거리의 양 끝이기 때문임.\n임베딩에서 초기 높이에 신호를 깔면 링이 점프 자리에서 끊어짐 — 위상과 데이터가 한 거리 안에 같이 사는 게 snow embedding 의 핵심임.\n\n\n\n향후 실험\n\n향후 실험 1: 점프와 진동의 세기를 바꿔가며 snow 가 Fourier·TV 를 둘 다 더 크게 이기는 구간이 있는지?\n향후 실험 2: 링 말고 비대칭 그래프에선 circulant 트릭이 안 먹음. 그땐 online 으로 어떻게 10억을 태울지?\n향후 실험 3: \\(t^*\\) 가 신호 종류마다 다를 텐데, 신호를 안 보고 \\(t^*\\) 를 미리 고를 수 있을지?\n\n재미있음."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#t-에서-디노이징-결과",
-    "href": "Posts/260604_a7f3c1.html#t-에서-디노이징-결과",
-    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
-    "section": "\\(t^*\\) 에서 디노이징 결과",
-    "text": "\\(t^*\\) 에서 디노이징 결과\n가장 좋았던 \\(t^*=10^9\\) 의 라플라시안으로 디노이징한 걸 Fourier·TV 와 나란히 봄. 링을 3D 로 세우고 색은 링 위 각도임.\n\n\n\n\n\nFourier 는 진동을 잘 살리지만 점프 경계에서 잔물결이 남음 (RMSE 0.123). TV 는 평평한 점프 구간은 깨끗하지만 진동을 살짝 죽임 (0.103). HST snow 는 점프의 단차와 진동의 물결을 둘 다 잡아서 0.109 — Fourier 를 이기고 TV 에 거의 붙음. 진동·점프 둘 다 끌고 가는 데서 균형이 좋다는 뜻임.\n우하단 패널이 그 snow 거리의 임베딩임. snow distance \\(\\sqrt{\\mathrm{SD}^2/t}\\) 를 3D MDS 로 박은 건데, 여기서 핵심은 snow 의 출발 높이임 — snow 는 매 step 눈을 쌓기 전에 초기 높이를 신호값으로 두고 시작함 (그래서 SD distance 안에 그래프 구조와 신호가 같이 들어감). 그 결과 링이 점프 자리에서 끊어짐. 신호가 비슷한 구간끼리는 출발 높이도 비슷해서 가깝고, 점프를 사이에 둔 노드끼리는 멀어지기 때문임. 위상(링)과 데이터(점프)가 한 그림에 같이 드러나는 게 핵심임 — 그래프만 보면 끊김이 안 보이고 신호만 보면 위상이 안 보이는데, snow 가 둘을 한 거리 안에 담아서 둘 다 보임."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#t-의-임베딩-점프가-링을-끊는다",
-    "href": "Posts/260604_a7f3c1.html#t-의-임베딩-점프가-링을-끊는다",
-    "title": "snow 를 1억 번 태우면 디노이징이 회복된다",
-    "section": "\\(t^*\\) 의 임베딩 — 점프가 링을 끊는다",
-    "text": "\\(t^*\\) 의 임베딩 — 점프가 링을 끊는다\nsnow distance 로 노드를 좌표공간에 박아봄 (embedding). 방식은 거리행렬 \\(\\sqrt{\\mathrm{SD}^2/t}\\) 를 3D MDS 에 넣는 것 — snow 거리가 그대로 좌표가 됨. 여기서 핵심은 snow 의 출발 높이임. snow 는 매 step 눈을 쌓기 전에 초기 높이를 신호값으로 두고 시작함. 그래서 SD distance 안에 그래프 구조와 신호가 같이 들어감.\n두 경우를 나란히 봄 — 왼쪽은 초기 신호를 \\(f=0\\) 으로 둔 것(그래프 구조만), 가운데는 초기 신호를 진짜 신호로 둔 것(그래프 + 신호).\n\n\n\n\n\n왼쪽(\\(f=0\\))은 닫힌 링으로 복원됨. 노드 번호를 안 줬는데도 snow 거리가 링의 위상을 다 담고 있음 — 거리만으로 그래프 모양이 살아남. 그런데 이건 신호를 안 깐 결과라, 신호가 뭐든 항상 같은 링이 나옴.\n가운데(\\(f=\\)신호)가 진짜 보고 싶었던 거임. 초기 높이에 신호를 깔면 링이 점프 자리에서 끊어짐 — 신호가 비슷한 구간끼리는 높이도 비슷하게 출발해서 가깝고, 점프를 사이에 둔 노드끼리는 출발 높이가 벌어져서 멀어지기 때문임. 위상(링)과 데이터(점프)가 한 그림에 같이 드러나는 게 핵심임. 그래프만 보면 끊김이 안 보이고 신호만 보면 위상이 안 보이는데, snow 가 둘을 한 거리 안에 담아서 둘 다 보임."
-  },
-  {
-    "objectID": "Posts/260604_a7f3c1.html#snow-를-10억-번-메모리-안-터지게",
-    "href": "Posts/260604_a7f3c1.html#snow-를-10억-번-메모리-안-터지게",
-    "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
-    "section": "snow 를 10억 번, 메모리 안 터지게",
-    "text": "snow 를 10억 번, 메모리 안 터지게\n문제는 메모리임. 링 \\(N=1024\\) 에서 매 step 의 높이 지형을 다 저장하면 \\(1024 \\times 10^9 \\times 8\\,\\mathrm{B} \\approx 8\\,\\mathrm{TB}\\) — 말도 안 됨. 그런데 링은 회전 대칭이라 거리 행렬이 circulant 임. 즉 \\(\\mathrm{SD}^2_t(0,j)\\) 한 행만 알면 전체가 복원됨. 그래서 높이 지형 전체를 버리고, 0번 노드 기준 거리만 online 으로 누적함:\n\\[\\mathrm{acc}[j] \\;\\mathrel{+}=\\; \\bigl(h_0(s) - h_j(s)\\bigr)^2 \\quad \\text{(매 step }s\\text{)}.\\]\n이러면 메모리는 \\(O(N)\\) 으로 고정됨 — 10억을 태워도 안 터짐. walker 한 칸 옮기는 게 전부라 numba 로 2~3분이면 끝남.\n\n\nCode\nfrom numba import njit\nimport numpy as np\n\n@njit(cache=True)\ndef snow_online_ring(N, T_max, b, seed, chk):\n    np.random.seed(seed)\n    h = np.zeros(N); acc = np.zeros(N)            # 높이 + 거리 누적 (한 행)\n    out = np.zeros((chk.shape[0], N)); ci = 0\n    Z = T_max + 1; cur = -1; maxflow = 0          # 첫 step 강제 Fall\n    for step in range(1, T_max + 1):\n        if Z &gt;= maxflow:                          # Fall: 새 라운드\n            maxflow = N + np.random.randint(0, N + 1)\n            nxt = np.random.randint(0, N); h[nxt] += b*np.random.random(); Z = 0\n        else:\n            left = (cur-1) % N; right = (cur+1) % N\n            ds0 = h[cur] &gt;= h[left]; ds1 = h[cur] &gt;= h[right]   # downstream 만\n            bb = b*np.random.random()\n            if ds0 and ds1: nxt = left if np.random.random() &lt; 0.5 else right; h[nxt]+=bb; Z+=1\n            elif ds0: nxt = left;  h[nxt]+=bb; Z+=1\n            elif ds1: nxt = right; h[nxt]+=bb; Z+=1\n            else:     nxt = cur;   h[cur]+=bb; Z = maxflow      # block (제자리)\n        cur = nxt\n        h0 = h[0]\n        for j in range(N): d = h0 - h[j]; acc[j] += d*d         # online 누적\n        if ci &lt; chk.shape[0] and step == chk[ci]:\n            out[ci] = acc; ci += 1\n    return out\n\n\n제대로 도는지부터 확인함. 큰 \\(t\\) 에서 \\(\\mathrm{SD}^2_t(0,j)/t\\) 가 링의 저항거리 \\(R(0,j)=j(N-j)/N\\) 와 맞아야 함 — \\(N=1024\\), \\(t=10^9\\) 에서 상관 0.97. online walker 가 정본 snow 와 같은 극한으로 감 (큰 링이라 0.99 까지는 안 가도 충분히 수렴)."
-  },
-  {
-    "objectID": "Posts/260706_hstproof.html",
-    "href": "Posts/260706_hstproof.html",
-    "title": "HST 증명 (오희석 교수님 공유용)",
-    "section": "",
-    "text": "Heavy-Snow Transform (HST) 의 정본 증명을 공유합니다. 아래에서 바로 열람하거나 PDF로 다운로드 하실 수 있습니다."
   }
 ]
