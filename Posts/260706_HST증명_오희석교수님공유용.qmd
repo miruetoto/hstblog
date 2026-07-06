@@ -1,0 +1,13 @@
+---
+title: "HST 증명 (오희석 교수님 공유용)"
+author: 최규빈
+date: 07/06/2026
+draft: false
+output-file: 260706_hstproof.html
+---
+
+<!-- 소유권자: 에이 | 게시: 하니 (우수블로그 이전) -->
+
+Heavy-Snow Transform (HST) 의 정본 증명을 공유합니다. 아래에서 바로 열람하거나 [PDF로 다운로드](attachments/260706_HST_proof_shared.pdf) 하실 수 있습니다.
+
+<iframe src="attachments/260706_HST_proof_shared.pdf" width="100%" height="900px" style="border:1px solid #ccc;"></iframe>

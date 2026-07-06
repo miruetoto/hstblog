@@ -46,7 +46,7 @@
     "href": "index.html",
     "title": "HST Research Blog",
     "section": "",
-    "text": "Heavy Snow Transform 연구 블로그.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nJun 4, 2026\n\n\nsnow 를 10억 번 태우면 디노이징이 회복된다\n\n\n최규빈 \n\n\n\n\n\n\nMay 28, 2026\n\n\nAAA vs BAB\n\n\n최규빈 \n\n\n\n\n\n\nMay 21, 2026\n\n\n호르무즈 Raw 시각화\n\n\n최규빈 \n\n\n\n\n\n\nMay 21, 2026\n\n\n연모양(kite)네트워크 실험\n\n\n최규빈 \n\n\n\n\n\n\nMay 20, 2026\n\n\n목걸이모양 네트워크 실험 (교수님 아이디어)\n\n\n최규빈 \n\n\n\n\n\n\nMay 16, 2026\n\n\n그래프 도메인에서의 여러가지 거리\n\n\n최규빈 \n\n\n\n\n\n\nMay 15, 2026\n\n\nHST에서 블락이 영원히 없다면?\n\n\n최규빈 \n\n\n\n\n\n\nMay 14, 2026\n\n\nHST에서 snowdistance는 결국 유클리드 정보를 잊는가?\n\n\n최규빈 \n\n\n\n\n\n\nNo matching items"
+    "text": "Heavy Snow Transform 연구 블로그.\n\n\n\n\n\n\n   \n    \n    \n      Order By\n      Default\n      \n        Date - Oldest\n      \n      \n        Date - Newest\n      \n      \n        Title\n      \n      \n        Author\n      \n    \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\n\nTitle\n\n\n\nAuthor\n\n\n\n\n\n\n\n\nJul 6, 2026\n\n\nHST 증명 (오희석 교수님 공유용)\n\n\n최규빈 \n\n\n\n\n\n\nJun 4, 2026\n\n\nsnow 를 10억 번 태우면 디노이징이 회복된다\n\n\n최규빈 \n\n\n\n\n\n\nMay 28, 2026\n\n\nAAA vs BAB\n\n\n최규빈 \n\n\n\n\n\n\nMay 21, 2026\n\n\n호르무즈 Raw 시각화\n\n\n최규빈 \n\n\n\n\n\n\nMay 21, 2026\n\n\n연모양(kite)네트워크 실험\n\n\n최규빈 \n\n\n\n\n\n\nMay 20, 2026\n\n\n목걸이모양 네트워크 실험 (교수님 아이디어)\n\n\n최규빈 \n\n\n\n\n\n\nMay 16, 2026\n\n\n그래프 도메인에서의 여러가지 거리\n\n\n최규빈 \n\n\n\n\n\n\nMay 15, 2026\n\n\nHST에서 블락이 영원히 없다면?\n\n\n최규빈 \n\n\n\n\n\n\nMay 14, 2026\n\n\nHST에서 snowdistance는 결국 유클리드 정보를 잊는가?\n\n\n최규빈 \n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "Posts/260515_d3bd76.html",
@@ -152,5 +152,12 @@
     "title": "snow 를 10억 번 태우면 디노이징이 회복된다",
     "section": "snow 를 10억 번, 메모리 안 터지게",
     "text": "snow 를 10억 번, 메모리 안 터지게\n문제는 메모리임. 링 \\(N=1024\\) 에서 매 step 의 높이 지형을 다 저장하면 \\(1024 \\times 10^9 \\times 8\\,\\mathrm{B} \\approx 8\\,\\mathrm{TB}\\) — 말도 안 됨. 그런데 링은 회전 대칭이라 거리 행렬이 circulant 임. 즉 \\(\\mathrm{SD}^2_t(0,j)\\) 한 행만 알면 전체가 복원됨. 그래서 높이 지형 전체를 버리고, 0번 노드 기준 거리만 online 으로 누적함:\n\\[\\mathrm{acc}[j] \\;\\mathrel{+}=\\; \\bigl(h_0(s) - h_j(s)\\bigr)^2 \\quad \\text{(매 step }s\\text{)}.\\]\n이러면 메모리는 \\(O(N)\\) 으로 고정됨 — 10억을 태워도 안 터짐. walker 한 칸 옮기는 게 전부라 numba 로 2~3분이면 끝남.\n\n\nCode\nfrom numba import njit\nimport numpy as np\n\n@njit(cache=True)\ndef snow_online_ring(N, T_max, b, seed, chk):\n    np.random.seed(seed)\n    h = np.zeros(N); acc = np.zeros(N)            # 높이 + 거리 누적 (한 행)\n    out = np.zeros((chk.shape[0], N)); ci = 0\n    Z = T_max + 1; cur = -1; maxflow = 0          # 첫 step 강제 Fall\n    for step in range(1, T_max + 1):\n        if Z &gt;= maxflow:                          # Fall: 새 라운드\n            maxflow = N + np.random.randint(0, N + 1)\n            nxt = np.random.randint(0, N); h[nxt] += b*np.random.random(); Z = 0\n        else:\n            left = (cur-1) % N; right = (cur+1) % N\n            ds0 = h[cur] &gt;= h[left]; ds1 = h[cur] &gt;= h[right]   # downstream 만\n            bb = b*np.random.random()\n            if ds0 and ds1: nxt = left if np.random.random() &lt; 0.5 else right; h[nxt]+=bb; Z+=1\n            elif ds0: nxt = left;  h[nxt]+=bb; Z+=1\n            elif ds1: nxt = right; h[nxt]+=bb; Z+=1\n            else:     nxt = cur;   h[cur]+=bb; Z = maxflow      # block (제자리)\n        cur = nxt\n        h0 = h[0]\n        for j in range(N): d = h0 - h[j]; acc[j] += d*d         # online 누적\n        if ci &lt; chk.shape[0] and step == chk[ci]:\n            out[ci] = acc; ci += 1\n    return out\n\n\n제대로 도는지부터 확인함. 큰 \\(t\\) 에서 \\(\\mathrm{SD}^2_t(0,j)/t\\) 가 링의 저항거리 \\(R(0,j)=j(N-j)/N\\) 와 맞아야 함 — \\(N=1024\\), \\(t=10^9\\) 에서 상관 0.97. online walker 가 정본 snow 와 같은 극한으로 감 (큰 링이라 0.99 까지는 안 가도 충분히 수렴)."
+  },
+  {
+    "objectID": "Posts/260706_hstproof.html",
+    "href": "Posts/260706_hstproof.html",
+    "title": "HST 증명 (오희석 교수님 공유용)",
+    "section": "",
+    "text": "Heavy-Snow Transform (HST) 의 정본 증명을 공유합니다. 아래에서 바로 열람하거나 PDF로 다운로드 하실 수 있습니다."
   }
 ]
