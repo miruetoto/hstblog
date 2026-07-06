@@ -1,0 +1,1110 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{arydshln}
+\usepackage{enumitem}
+\usepackage{mdframed}
+\usepackage{kotex}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+\newtheorem{rmk}{Remark}
+\newtheorem{dfn}{Definition}
+\newtheorem{asm}{Assumption}
+\newtheorem{fct}{Fact}
+\newtheorem{ex}{Example}
+\newtheorem{exr}{Exercise}
+
+\theoremstyle{definition}
+\usepackage[normalem]{ulem}
+\newtheorem{sceninner}{Scenario}
+\newenvironment{scen}[1][]{\par\smallskip\noindent\begin{minipage}{\textwidth}\ifx\relax#1\relax\begin{sceninner}\else\begin{sceninner}[#1]\fi}{\end{sceninner}\end{minipage}\par\smallskip}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1pt minus 1pt}
+
+\title{Three-Regime Convergence of the Snow Distance}
+\author{최규빈}
+\date{2026-05-17}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+asdf
+\end{abstract}
+
+\tableofcontents
+\bigskip
+
+\section{Setup}
+\label{sec:setup}
+
+
+\noindent\textbf{Graph and signal.}
+\begin{itemize}
+  \item $\mathsf{V} = \{v_1, \ldots, v_n\}$: the vertex set; $n := |\mathsf{V}| < \infty$.
+  \item $\mathsf{E}$: the edge set.
+  \item $\mathbf{W} = [w_{ij}]$: the symmetric weight matrix, $w_{ii} = 0$.
+  \item $\mathcal{G} = (\mathsf{V}, \mathsf{E}, \mathbf{W})$: a connected weighted graph.
+  \item $\mathbf{y} = (y(v_1), \ldots, y(v_n)) \in \mathbb{R}^n$: the initial heights, $h(v_i, 0) = y(v_i)$.
+\end{itemize}
+
+\noindent\textbf{Indices.}
+\begin{itemize}
+  \item $t \in \{0, 1, 2, \ldots\}$: the discrete time (step index).
+  \item $r \in \{0, 1, 2, \ldots\}$: the round index.
+  \item $t_r$: the $r$-th fall time (round start), $t_0 < t_1 < \cdots$; the $r$-th round is the interval $(t_r, t_{r+1}]$, linking the time index $t$ to the round index $r$.
+  \item $k$: a dummy time index, used in summations such as $\sum_{k=0}^{t}$.
+  \item $i, j$: vertex indices; $(i,j)$ the pair whose snow distance is studied.
+\end{itemize}
+
+\noindent\textbf{HST dynamics.}
+\begin{itemize}
+  \item $b > 0$: the snowfall scale (per-step increment ceiling).
+  \item $b'_{t+1} \sim \mathrm{Unif}(0, b)$: the increment at step $t+1$, drawn i.i.d.
+  \item $T_{\max} := 2n$: the uniform bound on the consecutive-flow count.
+  \item $\boldsymbol{\mu}_0$: the fall distribution on $\mathsf{V}$, of full support; canonically $\boldsymbol{\mu}_0(v_i) = \deg(v_i)/\sum_j \deg(v_j)$.
+  \item $\mu_{\min} := \min_i \boldsymbol{\mu}_0(v_i) > 0$: the minimum fall probability.
+  \item $Z_t \in \{0, \ldots, T_{\max}\}$: the block timer (consecutive-flow count); $Z_0 := T_{\max}$.
+  \item $h(v_i, t) \in \mathbb{R}$: the snow height at $v_i$ at time $t \geq 0$.
+  \item $SD^2_{ij}(t) := \sum_{k=0}^{t} \bigl(h(v_i, k) - h(v_j, k)\bigr)^2$: the snow distance.
+\end{itemize}
+
+\noindent\textbf{Markov chain.}
+\begin{itemize}
+  \item $X_t \in \mathsf{V}$: the walker location; $X_0 \sim \boldsymbol{\mu}_0$.
+  \item $\Theta_t := T_{\max}^{(r(t))}$: the current round's threshold (constant within a round).
+  \item $S_t := (\mathring{\mathbf{h}}(t), X_t, Z_t, \Theta_t) \in \mathsf{S} := \mathbb{R}^{n-1} \times \mathsf{V} \times \{0, \ldots, 2n\} \times \{n, \ldots, 2n\}$: the augmented (Markov) state.
+  \item $\mathcal{F}_t := \sigma(S_0, b'_1, S_1, \ldots, b'_t, S_t)$: the natural filtration.
+\end{itemize}
+
+\noindent\textbf{Round skeleton.}
+\begin{itemize}
+  \item $m_r := t_{r+1} - t_r$: the round length, $m_r \leq T_{\max}^{(r)} + 1 \leq 2n + 1$.
+  \item $T_{\max}^{(r)} \sim \mathrm{Unif}\{n, \ldots, 2n\}$: the round-$r$ threshold, drawn afresh at each fall.
+  \item $S^{\star}_r := (\mathring{\mathbf{h}}(t_r), X_{t_r}) \in \mathsf{S}^{\star} := \mathbb{R}^{n-1} \times \mathsf{V}$: the round-skeleton state (the $(\mathring{\mathbf{h}}, X)$-projection of $S_{t_r}$).
+  \item $P^{\star}(s^{\star}, \mathsf{A}^{\star}) := \mathbb{P}(S^{\star}_{r+1} \in \mathsf{A}^{\star} \mid S^{\star}_r = s^{\star})$: the one-round skeleton kernel; $(P^{\star})^m(s^{\star}, \cdot)$ is the law of $S^{\star}_{r+m}$.
+\end{itemize}
+
+\noindent\textbf{Quantities introduced for the proofs.}
+\begin{itemize}
+  \item $\bar h(t) := \frac{1}{n}\sum_{i=1}^n h(v_i, t)$: the mean height.
+  \item $\hbar(v_i, t) := h(v_i, t) - \bar h(t)$: the centred height.
+  \item $\Phi(t) := \sum_{i=1}^n \hbar(v_i, t)^2$: the Lyapunov function.
+  \item $M(t) := \max_i |\hbar(v_i, t)|$: the maximum centred height in magnitude (the max-norm of $\hbar(\cdot, t)$).
+  \item $\mathring{\mathbf{h}}(t) := (h(v_2,t) - h(v_1,t), \ldots, h(v_n,t) - h(v_1,t)) \in \mathbb{R}^{n-1}$: the $v_1$-anchored height-difference vector; \textcolor{red}{for a round-skeleton state $s^{\star}\in\mathsf{S}^{\star} = \mathbb{R}^{n-1}\times\mathsf{V}$, $\mathring{\mathbf{h}}(s^{\star})$ denotes its first (height-difference) coordinate (so $\mathring{\mathbf{h}}(S^{\star}_r) = \mathring{\mathbf{h}}(t_r)$). Note that $\mathring{\mathbf{h}}(\cdot)$ doubles as a function of a state $s^{\star}$ and of a time $t$ (double notation)}.
+\end{itemize}
+
+\noindent\textbf{Measures.}
+\begin{itemize}
+  \item $|\mathsf{A}|_{\mathrm{Leb}}$: the Lebesgue measure (the bare $|\cdot|$ is reserved for absolute value).
+\end{itemize}
+
+
+
+\section{The cancellation-tier classification}
+\label{sec:regimes}
+
+Snow distance $SD^2_{ij}$ was defined in Section~\ref{sec:setup}. The growth rate of $SD^2_{ij}(t)$ is governed by a single integer, the \emph{cancellation tier} $k$ of the pair $(i,j)$: the number of orders by which the squared height difference $(h(v_i,t)-h(v_j,t))^2$ is suppressed below its worst-case order $t^2$. With the per-time order written as $t^{2-k}$, summation to the horizon raises the exponent by one, so
+\[
+  \frac{SD^2_{ij}(t)}{t^{\,3-k}} \;\xrightarrow{t\to\infty}\; c^{(k)}_{ij} \qquad\text{a.s.,}
+\]
+with $k\in\{0,1,2\}$ the cancellation tier. The three classical regimes are the three tiers.
+
+\begin{dfn}
+\label{dfn:rho}
+The \emph{long-run deposition rate} at node $v_i$ is
+\[
+  \rho_i \;:=\; \lim_{t\to\infty} \frac{1}{t}\sum_{k=1}^{t} \mathbf{1}\{X_k = v_i\},
+\]
+when the limit exists. Its existence is taken as an input hypothesis for the drift and intermediate tiers (Tiers 0 and 1); for the balanced tier (Tier 2) it is \emph{derived}, with $\rho_i = 1/n$.
+\end{dfn}
+
+\begin{dfn}
+\label{dfn:regime}
+Suppose $\rho_i$ exists (a.s.) for all $i\in \mathsf{V}$. The pair $(i,j)$ has:
+\begin{itemize}
+\item \textbf{Cancellation Tier 0 (drift regime):} $\rho_i\neq\rho_j$. The drift survives, $(h_i-h_j)^2\sim t^2$, and $SD^2_{ij}/t^3\to c^{(0)}_{ij}$.
+\item \textbf{Cancellation Tier 1 (intermediate regime):} $\rho_i=\rho_j$ but the system is \emph{globally unbalanced} (there exist $a,b$ with $\rho_a\neq\rho_b$). The drift cancels but the fluctuation survives, $(h_i-h_j)^2\sim t$, and $SD^2_{ij}/t^2\to c^{(1)}_{ij}$.
+\item \textbf{Cancellation Tier 2 (balanced regime):} $\rho_i=1/n$ for all~$i$ (since $\sum_i\rho_i=1$, equivalently $\rho_i=\rho_j$ for all $i,j$ \emph{and} global balance). Both drift and fluctuation cancel, $(h_i-h_j)^2=O(1)$, and $SD^2_{ij}/t\to c^{(2)}_{ij}$.
+\end{itemize}
+\end{dfn}
+
+Each of the three theorems below takes, for the pair $(i, j)$, exactly one regime-defining hypothesis:
+\begin{enumerate}[label=\textnormal{(A\arabic*)}, leftmargin=2.5em]
+  \item \textbf{(Tier 0, drift)} the deposition rates $\rho_i, \rho_j$ exist a.s.\ and satisfy $\rho_i \neq \rho_j$.
+  \item \textbf{(Tier 1, diffusive)} $\rho_i, \rho_j$ exist a.s.\ with $\rho_i = \rho_j$, and the height difference $\Delta h_{ij}(t) := h(v_i, t) - h(v_j, t)$ satisfies $\Delta h_{ij}(t)^2 / t \to \sigma^2_{ij} \in (0, \infty)$ a.s.
+  \item \textbf{(Tier 2, Foster)} $(\mathcal{G}, \boldsymbol{\mu}_0, b, T_{\max})$ satisfies the $\ell$-round Foster drift, Assumption~\ref{asm:Foster}.
+\end{enumerate}
+For Tiers 0 and 1 the a.s.\ existence of $\rho_i, \rho_j$ is an input assumption (\S\ref{sec:setup}; no general unconditional proof is claimed), and the strict inequality (resp.\ equality) of $\rho_i, \rho_j$ is what places the pair in the tier. For Tier 2 no occupation-rate input is imposed: under (A3) the balanced occupation $\rho_i = 1/n$ is a \emph{consequence}, not a hypothesis.
+
+The two cancellations are structural consequences of the block-and-flow rule: the block mechanism pushes the occupation toward uniform balance, and the Foster--Lyapunov recurrence of the height profile bounds the cumulative fluctuation (fluctuation canceller, Tier $1\to2$). In Tier 2 this uniform balance $\rho_i = 1/n$ is not posited separately; under the Foster drift it is forced by the stationary law of the recurrent chain. The three sections below establish the convergence in each tier.
+
+
+\section{Cancellation Tier 0 (drift regime)}
+\label{sec:thmC}
+
+The proof of the Tier 0 theorem rests on two external convergence results for square-integrable martingales: the strong law of large numbers (SLLN) for the regime of diverging predictable quadratic variation, and the $L^2$-bounded martingale convergence theorem for the regime where it stays finite. We state each as a wrapper lemma; the proof then applies them to the centred height martingale below.
+
+\begin{lem}[Martingale SLLN; cf.\ {\cite[Thm.~4.5.3]{Durrett2019}}, {\cite[Thm.~20.10]{Davidson1994}}]
+\label{lem:MSLLN}
+Let $\{Y_t\}_{t \geq 0}$ be a square-integrable martingale with respect to a filtration $\{\mathcal{F}_t\}$, with predictable quadratic variation
+\[
+  A_t \;:=\; \sum_{k=1}^{t} \mathbb{E}\bigl[(Y_k - Y_{k-1})^2 \,\bigm|\, \mathcal{F}_{k-1}\bigr].
+\]
+If $A_\infty := \lim_{t \to \infty} A_t = \infty$ a.s., then for any non-decreasing predictable $\{f(A_t)\}$ with $f(u) \to \infty$ as $u \to \infty$ and $\sum_t \mathbb{E}[(Y_t - Y_{t-1})^2] / f(A_t)^2 < \infty$,
+\[
+  \frac{Y_t}{f(A_t)} \;\xrightarrow{t \to \infty}\; 0 \quad \text{a.s.}
+\]
+In particular, for bounded-increment martingales with $A_t \sim c\,t$ for some $c > 0$, taking $f(A_t) = t$ yields $Y_t/t \to 0$ a.s.
+\end{lem}
+\begin{proof}
+This is \cite[Thm.~4.5.3]{Durrett2019} (also \cite[Thm.~20.10]{Davidson1994}).
+\end{proof}
+
+\begin{lem}[$L^2$-bounded martingale convergence; cf.\ {\cite[Thm.~4.5.2]{Durrett2019}}]
+\label{lem:L2mart}
+Let $\{Y_t\}_{t \geq 0}$ be a square-integrable martingale with predictable quadratic variation $A_t$ as above. If $\sup_t \mathbb{E}[Y_t^2] < \infty$ (equivalently $\mathbb{E}[A_\infty] < \infty$), then $Y_t$ converges a.s.\ to a finite limit; in particular $Y_t = o(t)$ a.s.
+\end{lem}
+\begin{proof}
+This is the martingale convergence theorem, \cite[Thm.~4.5.2]{Durrett2019}.
+\end{proof}
+
+
+\begin{lem}
+\label{lem:height-decomp}
+Under the standing setting (connected $\mathcal{G}$, full-support $\boldsymbol{\mu}_0$) and (A1) ($\rho_i, \rho_j$ exist a.s.; \S\ref{sec:regimes}),
+\begin{equation*}
+h(v_i,t) - h(v_j,t) \;=\; \bar{b}_{ij}\,t + o(t) \quad \text{a.s.}
+\end{equation*}
+where $\bar{b}_{ij} := \bar b\,(\rho_i - \rho_j)$.
+\end{lem}
+
+\begin{proof}
+The walker move uses only the height profile, not the deposit, so $b'_k \perp (\mathcal{F}_{k-1}, X_k)$ with $b'_k$ i.i.d.\ $\mathrm{Unif}(0, b)$ (draw $\to$ move $\to$ deposit). Splitting $b'_k = (b'_k - \bar b) + \bar b$, the height at $v_i$ is a drift plus a centred martingale:
+\[
+h(v_i, t) - h(v_i, 0) \;=\; \bar b \sum_{k=1}^{t} \mathbf{1}\{X_k = v_i\} \;+\; \sum_{k=1}^{t} (b'_k - \bar b)\,\mathbf{1}\{X_k = v_i\} .
+\]
+The proof rests on two claims about these terms, proved at the end.
+
+\smallskip\noindent\textbf{Claim 1.}\quad $\bar b \sum_{k=1}^{t}\mathbf{1}\{X_k = v_i\} = \bar b\,\rho_i\,t + o(t)$ a.s.
+
+\smallskip\noindent\textbf{Claim 2.}\quad $\sum_{k=1}^{t} (b'_k - \bar b)\,\mathbf{1}\{X_k = v_i\} = o(t)$ a.s.
+
+\smallskip\noindent
+Assuming the claims, $h(v_i, t) = h(v_i, 0) + \bar b\,\rho_i\,t + o(t)$ a.s.; the same argument at $v_j$ gives $h(v_j, t) = h(v_j, 0) + \bar b\,\rho_j\,t + o(t)$. Subtracting,
+\begin{align*}
+h(v_i, t) - h(v_j, t)
+&= \bigl[h(v_i, 0) - h(v_j, 0)\bigr] + \bar b\,(\rho_i - \rho_j)\,t + o(t) \\
+&= \bar{b}_{ij}\,t + o(t) \quad \text{a.s.},
+\end{align*}
+the constant $h(v_i, 0) - h(v_j, 0)$ being absorbed into $o(t)$. This is the asserted decomposition. It remains to prove the claims.
+
+\medskip\noindent\textit{Proof of Claim 1.}\quad By (A1), $\tfrac{1}{t}\sum_{k=1}^{t}\mathbf{1}\{X_k = v_i\} \to \rho_i$ a.s.; equivalently $\sum_{k=1}^{t}\mathbf{1}\{X_k = v_i\} = \rho_i t + o(t)$ a.s., and multiplying by $\bar b$ gives the claim.
+
+\medskip\noindent\textit{Proof of Claim 2.}\quad $X_k$ is determined \emph{after} the step-$k$ move ($X_k \in \mathcal{F}_k$), but the move uses only the height profile, not the deposit, so $b'_k \perp (\mathcal{F}_{k-1}, X_k)$ and $\mathbb{E}[b'_k] = \bar b$. Hence
+\[
+\mathbb{E}[(b'_k - \bar b)\,\mathbf{1}\{X_k = v_i\}\mid\mathcal{F}_{k-1}] = \mathbb{E}[b'_k - \bar b]\cdot\mathbb{P}(X_k = v_i\mid\mathcal{F}_{k-1}) = 0,
+\]
+so the partial sums form an $\{\mathcal{F}_k\}$-martingale with increments $|b'_k - \bar b|\,\mathbf{1}\{X_k = v_i\} \le b/2$. By independence $\mathbb{E}[(b'_k - \bar b)^2 \mathbf{1}\{X_k = v_i\}\mid\mathcal{F}_{k-1}] = \tfrac{b^2}{12}\mathbb{P}(X_k = v_i\mid\mathcal{F}_{k-1})$, so its predictable quadratic variation is
+\[
+\tfrac{b^2}{12}\sum_{k=1}^{t}\mathbb{P}(X_k = v_i\mid\mathcal{F}_{k-1}) \sim \tfrac{b^2}{12}\,\rho_i\,t \ \text{a.s.},
+\]
+using $\sum_{k=1}^{t}\mathbb{P}(X_k{=}v_i\mid\mathcal{F}_{k-1}) = \rho_i t + o(t)$ (the counting martingale $\sum_{k=1}^{t}\mathbf{1}\{X_k=v_i\} - \sum_k\mathbb{P}(X_k{=}v_i\mid\mathcal{F}_{k-1})$ has increments $\le 1$, hence is $o(t)$ by Lemma~\ref{lem:MSLLN}). We conclude by cases on $\rho_i$. If $\rho_i > 0$, the quadratic variation grows linearly, so Lemma~\ref{lem:MSLLN} with $f(A_t) = t$ gives the martingale is $o(t)$ a.s. If $\rho_i = 0$, the bounded increments give $\sum_{k\ge1} k^{-2}\,\mathbb{E}[(b'_k - \bar b)^2 \mathbf{1}\{X_k = v_i\}] \le \tfrac{b^2}{4}\sum_k k^{-2} < \infty$; the martingale is again $o(t)$ a.s., by the quotient law of Lemma~\ref{lem:MSLLN} when its quadratic variation diverges and by the $L^2$-bounded convergence of Lemma~\ref{lem:L2mart} when it stays finite.
+\end{proof}
+
+
+
+
+\begin{lem}
+\label{lem:remainder-est}
+Under Lemma~\ref{lem:height-decomp}, the centred remainder $h(v_i,t) - h(v_j,t) - \bar{b}_{ij}\,t$ satisfies:
+\begin{enumerate}[label=\textup{(\Roman*)}]
+\item for all $t \geq 0$, $|h(v_i,t) - h(v_j,t) - \bar{b}_{ij}\,t| \leq (|h(v_i, 0)| + |h(v_j, 0)|) + (2b + |\bar{b}_{ij}|)\,t$;
+\item $2\bar{b}_{ij}\sum_{k=0}^{t} k\,(h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k) = o(t^3)$ a.s.;
+\item $\sum_{k=0}^{t} (h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)^2 = o(t^3)$ a.s.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+We prove (I) and (III), then deduce (II) by Cauchy--Schwarz.
+
+\smallskip\noindent\textit{(I).}\quad By the two-node triangle inequality and the single-node bound $|h(v, t)| \leq |h(v, 0)| + b\,t$:
+\begin{align*}
+\MoveEqLeft[2] |h(v_i,t) - h(v_j,t) - \bar{b}_{ij}\,t|
+\leq |h(v_i,t) - h(v_j,t)| + |\bar{b}_{ij}|\,t \\
+&\leq \bigl[|h(v_i, t)| + |h(v_j, t)|\bigr] + |\bar{b}_{ij}|\,t \\
+&\leq \bigl[(|h(v_i, 0)| + b\,t) + (|h(v_j, 0)| + b\,t)\bigr] + |\bar{b}_{ij}|\,t
+   \quad (\because |h(v, t)| \leq |h(v, 0)| + b\,t) \\
+&= \bigl(|h(v_i, 0)| + |h(v_j, 0)|\bigr) + (2b + |\bar{b}_{ij}|)\,t,
+\end{align*}
+a deterministic ($\omega$-independent) envelope.
+
+\smallskip\noindent\textit{(III).}\quad Fix $\epsilon > 0$. Writing the $o(t)$ remainder of Lemma~\ref{lem:height-decomp} in $\epsilon$-$N$ form, there is a random $T_\epsilon < \infty$ a.s.\ with $|h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k| \leq \epsilon k$ for $k \geq T_\epsilon$. Split at $T_\epsilon$: the uniform part $\sum_{k=0}^{T_\epsilon}(h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)^2$ is a finite, $t$-independent sum, hence $O(1)$ a.s.\ (squaring (I)); on the tail, the above bound gives
+\[
+\sum_{k=T_\epsilon+1}^{t} (h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)^2 \leq \epsilon^2 \sum_{k=0}^{t} k^2 = \tfrac{\epsilon^2}{3}t^3 + O(t^2).
+\]
+Dividing by $t^3$, the $\limsup_{t\to\infty}$ is at most $\epsilon^2/3$ a.s.; as $\epsilon > 0$ is arbitrary, (III) follows.
+
+\smallskip\noindent\textit{(II).}\quad By Cauchy--Schwarz,
+\begin{align*}
+\MoveEqLeft[2] \Bigl|\sum_{k=0}^{t} k\,(h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)\Bigr| \\
+&\leq \Bigl(\sum_{k=0}^{t} k^2\Bigr)^{1/2} \Bigl(\sum_{k=0}^{t} (h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)^2\Bigr)^{1/2} \\
+&= O(t^{3/2}) \cdot o(t^{3/2})
+   \quad (\because \textstyle\sum_{k=0}^t k^2 = \tfrac{t^3}{3}+O(t^2),\ \text{(III)}) \\
+&= o(t^3) \quad \text{a.s.},
+\end{align*}
+so $2\bar{b}_{ij}\sum_{k=0}^{t} k\,(h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k) = o(t^3)$ a.s.
+\end{proof}
+
+\begin{thm}
+\label{thm:drift}
+Assume the standing setting (connected $\mathcal{G}$, full-support $\boldsymbol{\mu}_0$) and the Tier 0 hypothesis (A1) ($\rho_i, \rho_j$ exist a.s.\ with $\rho_i \neq \rho_j$; \S\ref{sec:regimes}). (Connectedness of $\mathcal{G}$ enters only as background ensuring well-defined $\rho_i$; the proof below uses only (A1).)
+Then
+\[
+  \frac{SD^2_{ij}(t)}{t^3} \;\xrightarrow{t \to \infty}\; \frac{\bar{b}^{\,2}(\rho_i - \rho_j)^2}{3} \qquad \text{a.s.,}
+\]
+where $\bar{b} := \mathbb{E}[b'] = b/2$. The limit is strictly positive under (A1).
+\end{thm}
+
+\begin{proof}[Proof of Theorem~\ref{thm:drift}]
+Add and subtract the drift $\bar{b}_{ij}\,k$ inside the squared expansion of $SD^2_{ij}$ (the decomposition of Lemma~\ref{lem:height-decomp}):
+\begin{align*}
+\MoveEqLeft[2] SD^2_{ij}(t)
+= \sum_{k=0}^{t} (h(v_i,k) - h(v_j,k))^2 \\
+&= \sum_{k=0}^{t} \bigl(\bar{b}_{ij}\,k + (h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)\bigr)^2 \\
+&= \bar{b}_{ij}^2 \sum_{k=0}^{t} k^2 + 2\bar{b}_{ij}\sum_{k=0}^{t} k\,(h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k) + \sum_{k=0}^{t} (h(v_i,k) - h(v_j,k) - \bar{b}_{ij}\,k)^2 \\
+&= \bar{b}_{ij}^2 \cdot \tfrac{t^3}{3} + O(t^2) + o(t^3) + o(t^3)
+   \quad (\because \text{Lemma~\ref{lem:remainder-est}}) \\
+&= \bar{b}_{ij}^2 \cdot \tfrac{t^3}{3} + o(t^3)
+\end{align*}
+Dividing both sides by $t^3$:
+\[
+\frac{SD^2_{ij}(t)}{t^3}
+\;\xrightarrow{t \to \infty}\;
+\frac{\bar{b}_{ij}^2}{3}
+\;=\; \frac{\bar b^{\,2}\,(\rho_i - \rho_j)^2}{3} \quad \text{a.s.}
+\]
+Hypothesis (A1) gives $\bar{b}_{ij} \neq 0$ precisely when $\rho_i \neq \rho_j$, so the drift is alive and the leading $t^3$ term is genuinely dominant.
+\end{proof}
+
+
+
+
+
+
+\section{Cancellation Tier 1 (intermediate regime)}
+
+The proof of the Tier 1 theorem requires only one external analytic tool: a classical lemma of Toeplitz that converts pointwise convergence of a sequence into the convergence of its weighted averages. We state it first as a wrapper lemma; the proof then maps the partial sums of $\bigl(h(v_i,k)-h(v_j,k)\bigr)^2$ onto the Toeplitz array.
+
+\begin{lem}[Toeplitz lemma; cf.\ {\cite[\S43]{Knopp1928}}]
+\label{lem:Toeplitz}
+Let $\{\alpha_{tk}\}_{t, k \geq 1} \subset \mathbb{R}$ satisfy:
+\begin{enumerate}[label=\textnormal{(\roman*)}, leftmargin=2.5em]
+  \item There exists $c < \infty$ such that $\sum_{k=1}^{\infty} |\alpha_{tk}| \leq c$ for all $t \geq 1$;
+  \item $\sum_{k=1}^{\infty} \alpha_{tk} \to 1$ as $t \to \infty$;
+  \item for each fixed $k \geq 1$, $\alpha_{tk} \to 0$ as $t \to \infty$.
+\end{enumerate}
+Then for any convergent sequence $a_k \to a_\infty \in \mathbb{R}$,
+\[
+  \sum_{k=1}^{\infty} \alpha_{tk}\, a_k \;\xrightarrow{t \to \infty}\; a_\infty.
+\]
+\end{lem}
+\begin{proof}
+This is the classical Toeplitz limit theorem for regular weighted averages; see \cite[\S43]{Knopp1928}.
+\end{proof}
+
+\begin{cor}
+\label{cor:Toeplitz-as}
+Let $\{a_k\}_{k \geq 1}$ be a sequence of random variables on a common probability space satisfying $a_k \to a_\infty$ a.s., where $a_\infty$ is a finite-valued random variable. Let $\{\alpha_{tk}\}$ satisfy (i)--(iii) (deterministic weights). Then
+\[
+  \sum_{k=1}^{\infty} \alpha_{tk}\, a_k
+  \;\xrightarrow{t \to \infty}\; a_\infty
+  \qquad \text{a.s.}
+\]
+\end{cor}
+
+\begin{proof}
+Let $\Omega' := \{\omega : a_k(\omega) \to a_\infty(\omega)\}$. By hypothesis $\mathbb{P}(\Omega') = 1$. For each fixed $\omega \in \Omega'$, $a_k(\omega) \to a_\infty(\omega)$ is a deterministic limit, so Lemma~\ref{lem:Toeplitz} applies path-wise:
+\[
+  \sum_{k=1}^{\infty} \alpha_{tk}\, a_k(\omega) \to a_\infty(\omega).
+\]
+This holds for every $\omega \in \Omega'$ and $\mathbb{P}(\Omega') = 1$, hence $\sum_k \alpha_{tk}\, a_k \to a_\infty$ a.s.
+\end{proof}
+
+\begin{thm}
+\label{thm:intermediate}
+Assume the standing setting (connected $\mathcal{G}$, full-support $\boldsymbol{\mu}_0$) and the Tier 1 hypothesis (A2) of \S\ref{sec:regimes}: $\rho_i, \rho_j$ exist a.s.\ and the height difference $h(v_i, t) - h(v_j, t)$ satisfies
+\[
+  \frac{\bigl(h(v_i, t) - h(v_j, t)\bigr)^2}{t} \;\xrightarrow{t \to \infty}\; \sigma^2_{ij} \;\in\; (0, \infty) \qquad \text{a.s.}
+\]
+(Note: (A2) implies $\rho_i = \rho_j$ a.s., since $\rho_i \neq \rho_j$ would give $\bigl(h(v_i, t) - h(v_j, t)\bigr)^2/t \to \infty$.)
+Then
+\[
+  \frac{SD^2_{ij}(t)}{t^2} \;\xrightarrow{t \to \infty}\; \frac{\sigma^2_{ij}}{2} \qquad \text{a.s.}
+\]
+\end{thm}
+
+\begin{proof}[Proof of Theorem~\ref{thm:intermediate}]
+We must show $SD^2_{ij}(t)/t^2 \to \sigma^2_{ij}/2$ a.s.
+
+\begin{align*}
+  \MoveEqLeft[2] \frac{SD^2_{ij}(t)}{t^2}
+   \;=\; \frac{1}{t^2}\sum_{k=0}^{t} \bigl(h(v_i,k)-h(v_j,k)\bigr)^2 \\
+  &\;=\; \frac{1}{t^2}\Bigl(\bigl(h(v_i,0)-h(v_j,0)\bigr)^2 + \sum_{k=1}^{t} \bigl(h(v_i,k)-h(v_j,k)\bigr)^2\Bigr) \\
+  &\;=\; \frac{\bigl(h(v_i,0)-h(v_j,0)\bigr)^2}{t^2} + \frac{1}{t^2}\sum_{k=1}^{t} \bigl(h(v_i,k)-h(v_j,k)\bigr)^2 \\
+  &\;=\; \frac{\bigl(h(v_i,0)-h(v_j,0)\bigr)^2}{t^2} + \frac{t(t+1)/2}{t^2}\cdot\frac{\sum_{k=1}^{t} \bigl(h(v_i,k)-h(v_j,k)\bigr)^2}{t(t+1)/2} .
+\end{align*}
+It therefore suffices to establish the three limits
+\begin{enumerate}[label=\textnormal{(\Roman*)}, leftmargin=2.8em]
+  \item the boundary summand vanishes: $\dfrac{\bigl(h(v_i,0)-h(v_j,0)\bigr)^2}{t^2} \xrightarrow{t\to\infty} 0$;
+  \item the prefactor tends to one half: $\dfrac{t(t+1)/2}{t^2} \xrightarrow{t\to\infty} \dfrac12$;
+  \item the triangular-weighted average converges: $\dfrac{\sum_{k=1}^{t} \bigl(h(v_i,k)-h(v_j,k)\bigr)^2}{t(t+1)/2} \xrightarrow{t\to\infty} \sigma^2_{ij}$ a.s.;
+\end{enumerate}
+for then the last display tends to $0 + \tfrac12\,\sigma^2_{ij} = \sigma^2_{ij}/2$ a.s., which is the claim.
+
+Conclusion (I) is a fixed numerator over $t^2$. Conclusion (II) is the arithmetic
+\[
+  \frac{t(t+1)/2}{t^2} \;=\; \frac{t(t+1)}{2t^2} \;=\; \frac{t+1}{2t} \;=\; \frac12 + \frac{1}{2t} \;\xrightarrow{t \to \infty}\; \frac12 .
+\]
+For conclusion (III), write $\bigl(h(v_i,k)-h(v_j,k)\bigr)^2 = k\,a_k$ with $a_k := \bigl(h(v_i,k)-h(v_j,k)\bigr)^2/k$ and $\alpha_{tk} := k\,\mathbf{1}\{k \leq t\}/[t(t+1)/2]$; then its left-hand side is the Toeplitz transform $\sum_{k=1}^{\infty} \alpha_{tk}\,a_k$. Hypothesis (A2) gives $a_k \to \sigma^2_{ij}$ a.s., so by Corollary~\ref{cor:Toeplitz-as} it suffices to verify the Toeplitz conditions (i)--(iii) for the deterministic array $\{\alpha_{tk}\}$. The array is nonnegative and sums to one for every $t$:
+\[
+  \sum_{k=1}^{\infty} \alpha_{tk}
+  \;=\; \sum_{k=1}^{t} \frac{2k}{t(t+1)}
+  \;=\; \frac{2}{t(t+1)}\sum_{k=1}^{t} k
+  \;=\; \frac{2}{t(t+1)}\cdot\frac{t(t+1)}{2}
+  \;=\; 1 ,
+\]
+which gives (i) $\sum_{k} |\alpha_{tk}| = 1$ and (ii) $\sum_{k} \alpha_{tk} \to 1$; and (iii) holds since $\alpha_{tk} = 2k/[t(t+1)] \to 0$ for each fixed $k$. Corollary~\ref{cor:Toeplitz-as} with constant limit $a_\infty := \sigma^2_{ij}$ then yields conclusion (III), completing the proof.
+\end{proof}
+
+\section{Cancellation Tier 2 (balanced regime)}
+\label{sec:balanced}
+
+This entire section serves to verify, for the round skeleton $\{S^{\star}_r\}$, the three standing hypotheses of the ergodic theorems of \S\ref{sub:thm} (Lemmas~\ref{lem:posHarris}--\ref{lem:ratio}): \textbf{(H1)} $\psi$-irreducibility and aperiodicity, \textbf{(H2)} a petite set, and \textbf{(H3)} a Foster--Lyapunov drift toward it. Once the three hold, Theorem~\ref{thm:balanced} follows at once by reading off the conclusions with $V(s) = \Phi(s)^2$. The drift (H3) is built in \S\ref{sub:drift}, the petite set (H2) in \S\ref{sub:minor}, the $\psi$-irreducibility and aperiodicity (H1) in \S\ref{sub:irr}, and the ergodic theorem and Theorem~\ref{thm:balanced} in \S\ref{sub:thm}.
+
+\subsection{The Foster--Lyapunov drift (Hypothesis 3)}
+\label{sub:drift}
+
+All proofs in this section are for Model~A of the random-step variant: increments $b'_t \sim \mathrm{Unif}(0,b)$ drawn i.i.d.\ at every step, independent of all other randomness, with mean $\bar b := \mathbb{E}[b'_t] = b/2$. Recall from \S\ref{sec:setup} the centred height $\hbar(v_i,t) := h(v_i,t) - \bar h(t)$ and the Lyapunov function $\Phi(t) := \sum_i \hbar(v_i,t)^2$.
+
+Let $t_r$ be the $r$-th fall time (round start) and $m_r := t_{r+1}-t_r$ the round length; the round-start state is $s^{\star} = S^{\star}_r$. The drift is stated in terms of the \S\ref{sec:setup} quantities $\Phi(t_r)$ and $M(t_r)$ read at $t = t_r$; viewed as a function of the round-start state we also write $M(s^{\star}) := M(t_r)$ (used only for the small set and the minorisation below).
+
+The Foster--Lyapunov drift method \cite[Ch.~11, Thm.~11.0.1]{MeynTweedie2009} (originating in \cite{Foster1953}; see also \cite[\S7.1]{Bremaud1999}) requires the drift of $\Phi(t_r)$ to be strictly negative for large range $M(t_r)$. The one-round ($\ell=1$) drift fails on non-complete regular graphs, where the round-start walker can be pinned at a positive strict local minimum; the $\ell$-round form ($\ell \geq 2$) escapes this, as a fresh $\boldsymbol{\mu}_0$ re-fall each round washes out a single pinned bad descent. We take it as the single hypothesis of the Tier 2 theorem.
+
+\begin{asm}
+\label{asm:Foster}
+There exist an integer $\ell \geq 1$, $\varepsilon > 0$, and $C < \infty$ such that
+\begin{equation*}
+  \mathbb{E}\bigl[\Phi(t_{r+\ell}) - \Phi(t_r) \mid S^{\star}_r = s^{\star}\bigr] \;\leq\; -\,\varepsilon\,M(t_r) + C \qquad \forall\, s^{\star} \in \mathsf{S}^{\star}.
+\end{equation*}
+\end{asm}
+
+\begin{lem}
+\label{lem:phi2-foster-drift}
+Under Assumption~\ref{asm:Foster} (integer $\ell$, constants $\varepsilon, C$), the lifted Lyapunov function $V(t_r) := \Phi(t_r)^2$ satisfies, on the $\ell$-round skeleton $(P^{\star})^{\ell}$, for every round-start state $s^{\star}$,
+\[
+  \mathbb{E}\bigl[\Phi(t_{r+\ell})^2 - \Phi(t_r)^2 \mid S^{\star}_r = s^{\star}\bigr] \;\leq\; -\frac{\varepsilon}{2n^{3/2}}\,\Phi(t_r)^{3/2} + C_{\mathrm{cpt}}\,\mathbf{1}_{\mathsf{C}_0}(s^{\star})
+  \qquad (r \geq 0),
+\]
+where $\mathsf{C}_0 := \{s^{\star} : M(s^{\star}) \leq M_0\}$ with threshold $M_0 := R_* := \max\bigl\{4C_2/\varepsilon,\ (4C_0/\varepsilon)^{1/3}\bigr\}$, and the constants $C_2, C_0, C_{\mathrm{cpt}} > 0$ depend only on $(n, b, T_{\max}, \ell, \varepsilon, C)$. This is the Foster drift hypothesis of Lemmas~\ref{lem:posHarris} and~\ref{lem:moment} (applied to $(P^{\star})^{\ell}$) with $\varphi(x) := \tfrac{\varepsilon}{2n^{3/2}}\,x^{3/4}$ for $x \geq 0$ (non-decreasing, $\varphi(x) \to \infty$).
+\end{lem}
+\begin{proof}
+Here $M(t_r) = M(s^{\star})$ and $\Phi(t_r) = \Phi(s^{\star})$, and $\Delta_\ell\Phi := \Phi(t_{r+\ell}) - \Phi(t_r)$. By the identity $\Phi(t_{r+\ell})^2 - \Phi(t_r)^2 = 2\Phi(t_r)\Delta_\ell\Phi + (\Delta_\ell\Phi)^2$ and the $S^{\star}_r$-measurability of $\Phi(t_r)$, we expand the left side of the asserted inequality, one operation per line:
+\begin{align*}
+  \MoveEqLeft[2] \mathbb{E}\bigl[\Phi(t_{r+\ell})^2 - \Phi(t_r)^2 \mid S^{\star}_r = s^{\star}\bigr]
+  = 2\Phi(t_r)\,\mathbb{E}[\Delta_\ell\Phi \mid s^{\star}] + \mathbb{E}[(\Delta_\ell\Phi)^2 \mid s^{\star}] \\
+  &\leq 2\Phi(t_r)\bigl(-\varepsilon M(t_r) + C\bigr) + \bigl(A_\ell M(t_r) + B_\ell\bigr)^2
+     \quad (\because \text{Asm.~\ref{asm:Foster}, Claim 1}) \\
+  &= -2\varepsilon\Phi(t_r) M(t_r) + 2C\Phi(t_r) + \bigl(A_\ell M(t_r) + B_\ell\bigr)^2 \\
+  &\leq -\varepsilon M(t_r)^3 + 2Cn M(t_r)^2 + \bigl(A_\ell M(t_r) + B_\ell\bigr)^2
+     \quad (\because \text{Claim 2}) \\
+  &\leq -\varepsilon M(t_r)^3 + C_2 M(t_r)^2 + C_0
+     \quad \bigl(\because (A_\ell M(t_r) + B_\ell)^2 \leq 2A_\ell^2 M(t_r)^2 + 2B_\ell^2\bigr) \\
+  &\leq -\frac{\varepsilon}{2n^{3/2}}\,\Phi(t_r)^{3/2} + C_{\mathrm{cpt}}\,\mathbf{1}_{\mathsf{C}_0}(s^{\star})
+     \quad (\because \text{Claim 3}) ,
+\end{align*}
+which is the asserted drift, with $A_\ell := 2n\ell(T_{\max}+1)b$, $B_\ell := n\ell^2(T_{\max}+1)^2 b^2$, $C_2 := 2Cn + 2A_\ell^2$, $C_0 := 2B_\ell^2$. The three non-elementary steps are the claims now proved.
+
+\smallskip\noindent\textbf{Claim 1}: $|\Delta_\ell\Phi| \leq A_\ell M(t_r) + B_\ell$. Each round moves each $\hbar(v_i, \cdot)$ by at most $(T_{\max}+1)b$, so $\Delta\hbar_i := \hbar(v_i, t_{r+\ell}) - \hbar(v_i, t_r)$ obeys $|\Delta\hbar_i| \leq \ell(T_{\max}+1)b$. Since $\Delta_\ell\Phi = \sum_i(\hbar(v_i, t_{r+\ell})^2 - \hbar(v_i, t_r)^2) = \sum_i(2\hbar(v_i, t_r)\Delta\hbar_i + (\Delta\hbar_i)^2)$, expanding $|\Delta_\ell\Phi|$ from the left:
+\begin{align*}
+  |\Delta_\ell\Phi|
+  &\leq \sum_{i=1}^n 2|\hbar(v_i, t_r)|\,|\Delta\hbar_i| + \sum_{i=1}^n (\Delta\hbar_i)^2 \\
+  &\leq 2\ell(T_{\max}+1)b \sum_{i=1}^n |\hbar(v_i, t_r)| + n\bigl(\ell(T_{\max}+1)b\bigr)^2
+     \quad (\because |\Delta\hbar_i| \leq \ell(T_{\max}+1)b) \\
+  &\leq 2n\ell(T_{\max}+1)b\, M(t_r) + n\bigl(\ell(T_{\max}+1)b\bigr)^2
+     \quad (\because \textstyle\sum_i |\hbar(v_i, t_r)| \leq nM(t_r)) \\
+  &= A_\ell M(t_r) + B_\ell .
+\end{align*}
+
+\smallskip\noindent\textbf{Claim 2}: $2\Phi(t_r)M(t_r) \geq M(t_r)^3$ and $\Phi(t_r) \leq nM(t_r)^2$. Let $i^\ast$ attain $M(t_r) = \max_i|\hbar(v_i, t_r)|$, so $\hbar(v_{i^\ast}, t_r)^2 = M(t_r)^2$. Expanding each left side:
+\[
+  \Phi(t_r) = \sum_{i=1}^n \hbar(v_i, t_r)^2 \leq nM(t_r)^2 \quad (\because \hbar(v_i, t_r)^2 \leq M(t_r)^2) ,
+\]
+\[
+  2\Phi(t_r)M(t_r) \geq 2\hbar(v_{i^\ast}, t_r)^2 M(t_r) = 2M(t_r)^3 \geq M(t_r)^3 \quad (\because \Phi(t_r) \geq \hbar(v_{i^\ast}, t_r)^2) ,
+\]
+and $M(t_r) \geq \sqrt{\Phi(t_r)/n}$ follows from the first (used in Claim 3).
+
+\smallskip\noindent\textbf{Claim 3}: with $R_* := \max\{4C_2/\varepsilon,\ (4C_0/\varepsilon)^{1/3}\}$ and $\mathsf{C}_0 := \{s^{\star} : M(s^{\star}) \leq R_*\}$,
+\[
+  -\varepsilon M(t_r)^3 + C_2 M(t_r)^2 + C_0 \;\leq\; -\frac{\varepsilon}{2n^{3/2}}\Phi(t_r)^{3/2} + C_{\mathrm{cpt}}\,\mathbf{1}_{\mathsf{C}_0}(s^{\star}), \qquad C_{\mathrm{cpt}} := C_2 R_*^2 + C_0 + \tfrac{\varepsilon}{2}R_*^3 .
+\]
+Off $\mathsf{C}_0$ ($M(t_r) > R_*$, so $M(t_r) > 4C_2/\varepsilon$ and $M(t_r)^3 > 4C_0/\varepsilon$), expanding the left side:
+\begin{align*}
+  -\varepsilon M(t_r)^3 + C_2 M(t_r)^2 + C_0
+  &\leq -\varepsilon M(t_r)^3 + \tfrac{\varepsilon}{4}M(t_r)^3 + \tfrac{\varepsilon}{4}M(t_r)^3
+     \quad (\because C_2 M(t_r)^2, C_0 \leq \tfrac{\varepsilon}{4}M(t_r)^3) \\
+  &= -\tfrac{\varepsilon}{2}M(t_r)^3 \;\leq\; -\frac{\varepsilon}{2n^{3/2}}\Phi(t_r)^{3/2}
+     \quad (\because M(t_r) \geq \sqrt{\Phi(t_r)/n},\ \text{Claim 2}) ,
+\end{align*}
+the bound with $\mathbf{1}_{\mathsf{C}_0} = 0$. On $\mathsf{C}_0$ ($M(t_r) \leq R_*$, so $\Phi(t_r) \leq nR_*^2$), expanding the left side together with the retained term:
+\[
+  -\varepsilon M(t_r)^3 + C_2 M(t_r)^2 + C_0 + \tfrac{\varepsilon}{2n^{3/2}}\Phi(t_r)^{3/2}
+  \;\leq\; C_2 R_*^2 + C_0 + \tfrac{\varepsilon}{2}R_*^3 = C_{\mathrm{cpt}}
+\]
+(by $-\varepsilon M(t_r)^3 \leq 0$, $M(t_r) \leq R_*$, and $\tfrac{\varepsilon}{2n^{3/2}}\Phi(t_r)^{3/2} \leq \tfrac{\varepsilon}{2}R_*^3$), i.e.\ the bound with $\mathbf{1}_{\mathsf{C}_0} = 1$.
+\end{proof}
+
+
+
+Thus the single hypothesis underlying Tier 2 is the $\ell$-round drift (Assumption~\ref{asm:Foster}); whether the model itself satisfies it is a graph-class question, left open here.
+
+\subsection{The petite small set (Hypothesis 2)}
+\label{sub:minor}
+
+
+We now build the Doeblin minorisation that supplies Hypothesis (H2): we will show the sublevel set $\mathsf{C}_0 = \{s^{\star} : M(s^{\star}) \leq M_0\}$ is small, hence petite. We first recall the notion of a petite set. Throughout, for a measurable set $\mathsf{A}$, $P^m(s, \mathsf{A}) := \mathbb{P}_s(S_m \in \mathsf{A})$ is the $m$-step transition probability, and $P^m(s, \cdot)$ is the corresponding law on the state space, with the open slot ``$\cdot$'' read as a measure.
+
+\begin{dfn}[Small and petite sets; cf.\ {\cite[\S5.2, \S5.5]{MeynTweedie2009}}]
+\label{dfn:petite}
+A set $\mathsf{C} \subseteq \mathsf{Y}$ is \emph{small} if there exist $m \geq 1$ and a nonzero measure $\nu$ with the uniform minorization $P^m(y, \cdot) \geq \nu(\cdot)$ for all $y \in \mathsf{C}$: from anywhere in $\mathsf{C}$, after $m$ steps the chain has a common ``floor'' distribution $\nu$. It is \emph{petite} if the same holds for a sampled kernel $\sum_{m \geq 1} a(m)\,P^m(y, \cdot) \geq \nu(\cdot)$ with $\{a(m)\}$ a probability weight; every small set is petite.
+\end{dfn}
+
+
+
+
+
+
+
+
+
+
+\begin{lem}
+\label{lem:doeblin}
+The sublevel set $\mathsf{C}_0 = \{s^{\star} : M(s^{\star}) \leq M_0\}$ is small, hence petite, for the round skeleton (Definition~\ref{dfn:petite}).
+\end{lem}
+
+\begin{proof}[Proof sketch]
+To call $\mathsf{C}_0$ \emph{small} for $(P^{\star})^{m}$ means: however many HST processes we run, and wherever each one starts in $\mathsf{C}_0$, after exactly $m$ rounds they all pile up with a common density floor on a single target set. Since $\mathsf{S}^{\star} = \mathbb{R}^{n-1}\times\mathsf{V}$, we may choose this target as a product, a height-difference set times a node set; fixing the node coordinate to $v_n$ leaves only a height-difference set $\mathsf{U}\subset\mathbb{R}^{n-1}$ to choose. It therefore suffices to construct $\mathsf{U}$, a step count $m$, and a floor $\eta>0$ with
+\[
+  (P^{\star})^{m}(s^{\star},\cdot) \;\geq\; \eta\,\mathrm{Unif}(\mathsf{U})\otimes\delta_{v_n}
+  \qquad (s^{\star}\in \mathsf{C}_0) ,
+\]
+that is: $m$ rounds on, the walker sits at $v_n$ and the height difference lies in $\mathsf{U}$.
+
+Smallness puts no constraint on $\mathsf{U}$ beyond positive Lebesgue measure; for convenience we take it (i) near $\mathbf{0}$ and (ii) inside a single ordering chamber, meaning the node heights keep one fixed order throughout $\mathsf{U}$: near $\mathbf{0}$, but away from ties.
+
+For the floor we lower-bound the transition by the following (unrealistic) scenario; throughout, the \emph{branch} of a round is the path the walker actually follows at its non-fall steps, the discrete choices left free by the falls.
+\begin{scen}\label{scen:favourable}\leavevmode
+\begin{enumerate}[label=(\arabic*)]
+\item each round opens with a fall: a node is drawn with probability $\boldsymbol{\mu}_0$ and receives a deposit $b^{\sharp}_{t_r}\sim\mathrm{Unif}(0,b)$;
+\item every non-fall step deposits nothing (a zero deposit);
+\item the round's branch is fixed by the fall deposit of (1), unperturbed by (2);
+\item each round's change in the anchored height $\mathring{\mathbf{h}}$ depends only on $\mathbf{b}^{\sharp}$;
+\item the height difference after $m$ rounds depends only on $\mathbf{b}^{\sharp}$, landing in $\mathsf{U}$.
+\end{enumerate}
+\end{scen}
+
+\smallskip\noindent Look at item (1) more closely. Write $v^{\sharp}_r$ for the $r$-th fall target, cycling $v_1, v_2, \dots, v_n$; with $m$ a multiple of $n$ the final fall is pinned to $v_n$, so the node coordinate $\{v_n\}$ of the target is certain once the falls hit these cyclic targets. (The skeleton is read at fall times, so the window closes at the terminal fall, before any further flow can move the walker.) Such a hit is easy to arrange: the fall locations are i.i.d.\ $\boldsymbol{\mu}_0$-draws (snowfall A), so the probability of hitting all the cyclic targets is
+\[
+  \mathbb{P}\Bigl(\bigcap_{r=1}^{m}\{X_{t_r} = v^{\sharp}_r\}\Bigr)
+  \;=\; \prod_{r=1}^{m}\boldsymbol{\mu}_0(v^{\sharp}_r)
+  \;\geq\; \Bigl(\min_{i}\boldsymbol{\mu}_0(v_i)\Bigr)^{m} ,
+\]
+a floor independent of the start $s^{\star}$.
+
+\smallskip\noindent Why insist that $m$ be a multiple of $n$? One sweep through $v_1,\dots,v_n$ is a \emph{cycle} of $n$ falls; taking $m=nL$, with $L$ the number of cycles, keeps the final fall pinned to $v_n$ while $L$ may be taken as large as we need. With the floor $\bigl(\min_i \boldsymbol{\mu}_0(v_i)\bigr)^m$ and $m=nL$ in hand, the scenario reads:
+\begin{scen}\leavevmode
+\begin{enumerate}[label=(\arabic*)]
+\item each round opens with a fall: a node is drawn with probability $\boldsymbol{\mu}_0$ and receives a deposit $b^{\sharp}_{t_r}\sim\mathrm{Unif}(0,b)$, \uline{and the falls cycle through $v_1,\dots,v_n$ in order over $nL$ rounds ($L$ cycles), hitting all the cyclic targets with probability at least $\bigl(\min_i \boldsymbol{\mu}_0(v_i)\bigr)^m$};
+\item every non-fall step deposits nothing (a zero deposit);
+\item the round's branch is fixed by the fall deposit of (1), unperturbed by (2);
+\item each round's change in the anchored height $\mathring{\mathbf{h}}$ depends only on $\mathbf{b}^{\sharp}$;
+\item the height difference after $m$ rounds depends only on $\mathbf{b}^{\sharp}$, landing in $\mathsf{U}$.
+\end{enumerate}
+\end{scen}
+
+\smallskip\noindent Throughout this part the height differences live in $\mathbb{R}^{n-1}$, named by role: $\mathbf{u}$ for a chamber target ($\mathbf{u}\in\mathsf{U}$), $\mathbf{a}^{\sharp}$ for the fall image $\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$, and $\mathbf{k}$ (introduced below) for a point of the wobbled target set; vertices are written $v_i$. It now remains to land the height difference in $\mathsf{U}$, which items (2)--(4) make easy. By (2) every non-fall deposit is $0$, so the flow algorithm is effectively deleted: however the walker flows between falls, it deposits nothing, and the HST process reduces to snow raining on a freshly drawn node at each fall. This is what item (4) records, and the fall deposits alone build the height difference, so item (5) becomes a matter of reach: for a desired target $\mathbf{u}\in\mathsf{U}$, there are fall amounts $\mathbf{b}^{\sharp}\in[0,b]^{m}$ (the $m$ fall deposits) and a linear fall map $\mathbf{A}^{\sharp}$ (their cumulative effect on the anchored height) with $\mathbf{u} = \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$, the start plus the fall shift, where $L$ is taken large enough that the fall shifts reach $\mathbf{u}$ from $\mathring{\mathbf{h}}(s^{\star})$. The terminal height difference reads
+\[
+  \mathbf{u} \;=\; \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp} + \mathbf{0} ,
+\]
+where the third term is $\mathbf{0}$ because the non-fall deposits $\mathbf{b}^{\flat}$ all vanish in this favourable scenario, i.e.\ $\mathbf{b}^{\flat}=\mathbf{0}$.
+
+\smallskip\noindent It is worth pausing on the shape of the fall map $\mathbf{A}^{\sharp}$. The falls come in \emph{cycles}: one cycle is a sweep of $n$ falls, one landing on each of $v_1,\dots,v_n$ in turn. Writing $L$ for the number of cycles, there are $m=nL$ falls in all, so $\mathbf{A}^{\sharp}\in\mathbb{R}^{(n-1)\times nL}$. Its entries are only $0,1,-1$: each cycle contributes one $(n-1)\times n$ block, and $\mathbf{A}^{\sharp}$ is these $L$ blocks side by side,
+\[
+  \resizebox{0.97\textwidth}{!}{$\displaystyle
+  \mathbf{A}^{\sharp} \;=\;
+  \underbrace{\left[\;
+  \begin{array}{ccccc:ccccc:c:ccccc}
+    -1 & 1 & 0 & \cdots & 0 & -1 & 1 & 0 & \cdots & 0 & \cdots & -1 & 1 & 0 & \cdots & 0 \\
+    -1 & 0 & 1 & \cdots & 0 & -1 & 0 & 1 & \cdots & 0 &        & -1 & 0 & 1 & \cdots & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots &  & \vdots & \vdots & \vdots & \ddots & \vdots \\
+    -1 & 0 & 0 & \cdots & 1 & -1 & 0 & 0 & \cdots & 1 &        & -1 & 0 & 0 & \cdots & 1 \\
+  \end{array}
+  \;\right]}_{L\ \text{blocks}} \;\in\; \mathbb{R}^{(n-1)\times nL}
+  $},
+\]
+each block carrying $-1$ in its first column and the identity in the other $n-1$, so row $k$ of each block returns the anchored increment $b^{\sharp}_{k+1}-b^{\sharp}_{1}$ of that cycle's deposits. In block form, $\mathbf{A}^{\sharp} = [\,\mathbf{A}^{\sharp}_1 \mid \cdots \mid \mathbf{A}^{\sharp}_L\,]$ with all $L$ blocks identical. The matrix is just a record of the order in which the falls visit the nodes, the same combinatorial data as the visiting sequence. Once $m=nL$ is fixed, $\mathbf{A}^{\sharp}$ is a fixed matrix, and although the deposits $\mathbf{b}^{\sharp}$ are unknown in value, their number, hence the length of $\mathbf{b}^{\sharp}$, is fixed as well.
+
+\smallskip\noindent With $\mathbf{A}^{\sharp}$ in hand, the scenario sharpens:
+\begin{scen}\leavevmode
+\begin{enumerate}[label=(\arabic*)]
+\item each round opens with a fall: a node is drawn with probability $\boldsymbol{\mu}_0$ and receives a deposit $b^{\sharp}_{t_r}\sim\mathrm{Unif}(0,b)$, and the falls cycle through $v_1,\dots,v_n$ in order over $nL$ rounds ($L$ cycles), hitting all the cyclic targets with probability at least $\bigl(\min_i \boldsymbol{\mu}_0(v_i)\bigr)^m$;
+\item every non-fall step deposits nothing (a zero deposit);
+\item the round's branch is fixed by the fall deposit of (1), unperturbed by (2);
+\item each round's change in the anchored height $\mathring{\mathbf{h}}$ depends only on $\mathbf{b}^{\sharp}$;
+\item the height difference after \uline{$m=nL$} rounds \uline{equals $\mathbf{u} = \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$}, landing in $\mathsf{U}$.
+\end{enumerate}
+\end{scen}
+
+\smallskip\noindent This favourable scenario is, of course, a fiction of probability zero. Already item~(2), every non-fall step depositing exactly $0$, never occurs, since the non-fall deposits are continuous. We cannot pin each non-fall deposit at zero, but we can bound them all by a small $\varepsilon\in(0,b)$. Each non-fall deposit being $\mathrm{Unif}(0,b)$, a single step stays below $\varepsilon$ with probability $\varepsilon/b>0$ (positive since $\varepsilon<b$); the non-fall deposits no longer vanish, yet the scenario becomes an event of positive probability, which is all the floor needs.
+
+\smallskip\noindent To carry these non-fall deposits, now non-zero but each bounded by $\varepsilon$, we introduce the non-fall image
+\[
+  \mathbf{a}^{\flat} \;:=\; \mathbf{A}^{\flat}_{\amalg}\,\mathbf{b}^{\flat} \;\in\; \mathbb{R}^{n-1},
+\]
+the non-fall counterpart of the fall image $\mathbf{a}^{\sharp} = \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$, with $\mathbf{A}^{\flat}_{\amalg}$ in the role of $\mathbf{A}^{\sharp}$ and $\mathbf{b}^{\flat}$ in the role of $\mathbf{b}^{\sharp}$. The subscript $\amalg$ denotes the branch of the whole window, on which this map depends. The length of $\mathbf{b}^{\flat}$ is not fixed a priori: in the extreme where a block immediately follows every fall, $\mathbf{b}^{\flat}$ has the same dimension as $\mathbf{b}^{\sharp}$, while each extra flow adds one more coordinate (and $\mathbf{A}^{\flat}_{\amalg}$ grows with it).
+
+Although it is not fixed, fixing it is convenient. For that we use a padding trick: at most $T_{\max}$ non-fall steps occur per round, so we fill the unused slots of each round with zero dummies. Then $\mathbf{b}^{\flat}$ is a vector of fixed length $nLT_{\max}$, and $\mathbf{A}^{\flat}_{\amalg}$ a matrix of fixed size $(n-1)\times nLT_{\max}$, again with entries $0,1,-1$ like $\mathbf{A}^{\sharp}$ (the padded slots giving zero columns). Like $\mathbf{A}^{\sharp}$, it splits into one block per round,
+\[
+  \mathbf{A}^{\flat}_{\amalg} \;=\; \bigl[\, \mathbf{A}^{\flat}_1 \mid \mathbf{A}^{\flat}_2 \mid \cdots \mid \mathbf{A}^{\flat}_{nL} \,\bigr], \qquad \mathbf{A}^{\flat}_r \in \mathbb{R}^{(n-1)\times T_{\max}},
+\]
+each block $\mathbf{A}^{\flat}_r$ depending on round $r$'s branch piece (the non-fall nodes visited that round) and acting on that round's non-fall deposits $\mathbf{b}^{\flat}_r\in\mathbb{R}^{T_{\max}}$. Written out, $\mathbf{A}^{\flat}_{\amalg}$ takes the same block shape as $\mathbf{A}^{\sharp}$, only with branch-varying entries,
+\[
+  \resizebox{0.8\textwidth}{!}{$\displaystyle
+  \mathbf{A}^{\flat}_{\amalg} \;=\; \underbrace{\left[\begin{array}{ccc:ccc:c:ccc}
+    \ast & \cdots & \ast & \ast & \cdots & \ast & \cdots & \ast & \cdots & \ast \\
+    \vdots & \ddots & \vdots & \vdots & \ddots & \vdots & & \vdots & \ddots & \vdots \\
+    \ast & \cdots & \ast & \ast & \cdots & \ast & \cdots & \ast & \cdots & \ast
+  \end{array}\right]}_{nL\ \text{blocks}} \;\in\; \mathbb{R}^{(n-1)\times nLT_{\max}}
+  $},
+\]
+where each $\ast\in\{0,1,-1\}$: a visited node's column is its anchored increment, an unused slot's column is $\mathbf{0}$.
+
+\smallskip\noindent A word on branches. In the favourable scenario the set of possible branches depended only on $\mathbf{b}^{\sharp}$; once $\mathbf{b}^{\flat}$ enters, that set is no longer fixed, since the small deposits building up through a round can tip a height comparison and change which flow paths are open.
+
+\begin{ex}[branch set perturbed by non-fall deposits]\label{ex:branch-perturb}
+On the path $v_1\!-\!v_2\!-\!v_3$, suppose a fall on $v_1$ leaves the heights $(1, 0.99, 0.999)$: with $\mathbf{b}^{\flat}=\mathbf{0}$ the only path is $v_1\to v_2$ (a block), whereas with $\mathbf{b}^{\flat}\neq\mathbf{0}$ the small deposits can open up $v_1\to v_2$, $v_1\to v_2\to v_3$, $v_1\to v_2\to v_1$, and as many paths as $T_{\max}$ allows; see Figure~\ref{fig:branch-perturb}.
+\end{ex}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{fig_branch_perturb.pdf}
+\caption{Branch set perturbed by the non-fall deposit $b^{\flat}$ in Example~\ref{ex:branch-perturb}: path $v_1\!-\!v_2\!-\!v_3$, heights $\mathbf{h}=(1, 0.99, 0.999)$ after a fall on $v_1$. (a) The walker flows $v_1\to v_2$, the only downstream neighbour of $v_1$, and deposits $b^{\flat}$ there, so $h(v_2) = 0.99+b^{\flat}$. (b) For $b^{\flat}\in[0, 0.009)$, $0.99+b^{\flat}<0.999$ keeps both neighbours uphill, the downstream set of $v_2$ is empty, and the walker blocks: branch $v_1\,v_2$. (c) For $b^{\flat}\in(0.009, 0.01)$, $0.999<0.99+b^{\flat}<1$ opens $v_3$ only: branch $v_1\,v_2\,v_3$. (d) For $b^{\flat}>0.01$, both neighbours open and the walker picks each with probability $\tfrac12$: branch $v_1\,v_2\,v_1$ or $v_1\,v_2\,v_3$. The same fall thus admits different branches depending on $b^{\flat}$ alone. The vertical scale is schematic: the gaps $0.009$ and $0.001$ are exaggerated.}
+\label{fig:branch-perturb}
+\end{figure}
+
+\noindent So $\amalg$ is best read as one realised branch among many; it cannot be chosen independently of $\mathbf{b}^{\flat}$, since (as Example~\ref{ex:branch-perturb} shows) for some $\mathbf{b}^{\flat}$ a given $\amalg$ does not occur at all.
+
+\smallskip\noindent The terminal anchored height is then
+\[
+  \mathbf{u} \;=\; \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp} + \mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat} .
+\]
+Here $\mathbf{A}^{\flat}_{\amalg}$ depends on the branch $\amalg$, unlike the fixed fall map $\mathbf{A}^{\sharp}$, because the non-fall deposits are routed by the discrete choices. Finally, writing $\mathsf{T}^{\flat}$ for the set of non-fall step-times, every non-fall deposit stays below $\varepsilon$ with probability
+\[
+  \mathbb{P}\Bigl(\bigcap_{t\in\mathsf{T}^{\flat}}\{b^{\flat}_t \leq \varepsilon\}\Bigr) \;=\; \prod_{t\in\mathsf{T}^{\flat}}\frac{\varepsilon}{b} \;\geq\; \Bigl(\frac{\varepsilon}{b}\Bigr)^{nLT_{\max}},
+\]
+the inequality holding because at most $nLT_{\max}$ non-fall steps occur and $\varepsilon/b<1$.
+
+\smallskip\noindent We revise the scenario once more, with a clear trade-off: it is now realistic, but the price is that with $\mathbf{b}^{\flat}\neq\mathbf{0}$ the branch can no longer be fixed, and the height difference after $m=nL$ rounds can no longer be pinned to $\mathbf{b}^{\sharp}$ alone.
+\begin{scen}\leavevmode
+\begin{enumerate}[label=(\arabic*)]
+\item each round opens with a fall: a node is drawn with probability $\boldsymbol{\mu}_0$ and receives a deposit $b^{\sharp}_{t_r}\sim\mathrm{Unif}(0,b)$, and the falls cycle through $v_1,\dots,v_n$ in order over $nL$ rounds ($L$ cycles), hitting all the cyclic targets with probability at least $\bigl(\min_i \boldsymbol{\mu}_0(v_i)\bigr)^m$;
+\item every non-fall step deposits \uline{a small but nonzero amount, at most $\varepsilon$, with probability at least $(\varepsilon/b)^{nLT_{\max}}$};
+\item the round's branch is \uline{no longer} fixed by the fall deposit of (1)\uline{: the small deposits of (2) can tip a height comparison and change it};
+\item each round's change in the anchored height $\mathring{\mathbf{h}}$ depends \uline{not on $\mathbf{b}^{\sharp}$ alone but on $\mathbf{b}^{\sharp}$, $\amalg$, and $\mathbf{b}^{\flat}$ together};
+\item the height difference after $m=nL$ rounds equals $\mathbf{u} = \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$\uline{${}+ \mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}$}, landing in $\mathsf{U}$.
+\end{enumerate}
+\end{scen}
+
+\smallskip\noindent In item (3), branches immune to $\mathbf{b}^{\flat}$ are not the only way to land $\mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp} + \mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}$ in $\mathsf{U}$; but if the branch is assumed immune to the effect of $\mathbf{b}^{\flat}$, then $\mathbf{A}^{\flat}_{\amalg}$ can be treated, exactly like $\mathbf{A}^{\sharp}$, as a plain fixed linear map, and that convenience is worth assuming. Three ingredients pin the branch down:
+\begin{enumerate}[label=(\roman*)]
+\item the fall deposits do not land so as to make a height comparison a tie;
+\item the non-fall deposits are small enough to preserve the outcome of (i);
+\item with every comparison thus decided, the walker's remaining picks follow the prescribed branch $\amalg$ with probability at least $(1/n)^{2nL(n-1)}$ (a factor $1/n^{2}$ per degree-weighted pick, at most $nL(n-1)$ picks in the window).
+\end{enumerate}
+
+\noindent What does (i) mean? A small example explains it.
+
+\begin{ex}[tie avoidance]\label{ex:tie-avoid}
+Fix a fall time $t$, and suppose it is $v_2$'s turn: the fall event happens at $v_2$. Just before the fall the heights stand at
+\[
+  h(v_1) = 1, \qquad h(v_2) = 0.5, \qquad h(v_3) = 1.
+\]
+Dropping exactly $0.5$ would tie $v_2$ with both neighbours; assumption (i) says this does not happen: $b^{\sharp}_t$ lands either $\delta$ below or $\delta$ above $0.5$, and so sits a margin $\delta>0$ away from the tie; see Figure~\ref{fig:tie-avoid}(a--d).
+
+The neighbours need not stand at a common level. Suppose instead
+\[
+  h(v_1) = 1, \qquad h(v_2) = 0.5, \qquad h(v_3) = 0.75.
+\]
+Now two deposits make a tie: $b^{\sharp}_t = 0.25$ ties $v_2$ with $v_3$, and $b^{\sharp}_t = 0.5$ ties $v_2$ with $v_1$. Assumption (i) excludes both at once: $b^{\sharp}_t$ keeps a margin $\delta$ from each tie value, so the excluded set is the union of two $\delta$-tubes, one per comparison; see Figure~\ref{fig:tie-avoid}(e--k). A fall faces finitely many comparisons, so the excluded set is always a finite union of such tubes.
+\end{ex}
+
+\begin{figure}[htp]
+\centering
+\includegraphics{fig_tie_avoid.pdf}
+\caption{Tie avoidance (assumption (i)) in Example~\ref{ex:tie-avoid}; under each case, the allowed values of $b^{\sharp}_t$ on $[0,b]$, the $\delta$-tubes around the tie values excised (unlabelled ticks: tube endpoints; both axes share the same scale and $\delta$). Case 1 (a--d), equal neighbour levels: a fall at $v_2$, the heights just before being $h(v_1)=1$, $h(v_2)=0.5$, $h(v_3)=1$ (red dashed line: the common level $1$). (a) It is $v_2$'s turn; the deposit $b^{\sharp}_t$ is about to land, $h(v_2) \leftarrow 0.5 + b^{\sharp}_t$. (b) $b^{\sharp}_t = 0.5$ ties $v_2$ with both neighbours; excluded by assumption (i). (c)/(d) $b^{\sharp}_t$ at least $\delta$ below/above $0.5$: every comparison at this step is decided with margin $\delta$. Case 2 (e--k), unequal neighbour levels: $h(v_1)=1$, $h(v_2)=0.5$, $h(v_3)=0.75$ (red dashed lines: the levels $0.75$ and $1$), with two tie values. (e) It is $v_2$'s turn. (f) $b^{\sharp}_t = 0.25$ ties $v_2$ with $v_3$; excluded by assumption (i). (g)/(h) $b^{\sharp}_t$ at least $\delta$ below/above $0.25$: the comparison with $v_3$ is decided with margin $\delta$. (i) $b^{\sharp}_t = 0.5$ ties $v_2$ with $v_1$; also excluded by assumption (i). (j)/(k) $b^{\sharp}_t$ at least $\delta$ below/above $0.5$: the comparison with $v_1$ is decided with margin $\delta$. The vertical scale is schematic and $\delta$ is exaggerated.}
+\label{fig:tie-avoid}
+\end{figure}
+
+\noindent What (i) says directly is that the fall node avoids ties with its neighbours. Granted (i), does (ii) follow on its own? That is: after the initial fall, does there always exist a small enough $\mathbf{b}^{\flat}$ that fixes the set of branch combinations? This cannot be shown from (i) alone. With suitable additional conditions, however (finitely many comparisons, and a uniform Lipschitz bound on how $\mathbf{b}^{\flat}$ enters them), a small enough $\mathbf{b}^{\flat}$ does fix the branch; the full proof below (the tube-and-boundary bounds and the transport step) shows exactly this.
+
+\smallskip\noindent Items (i) and (ii) are therefore assumptions on the deposits, and the full proof prices them exactly there. Item (iii) requires no assumption: granted (i) and (ii) every comparison is settled, the pick among several strictly-lower neighbours is the one randomness left, and the walker's own pick rule supplies its floor $(1/n)^{2nL(n-1)}$. The chamber $\mathsf{U}$ stands apart from all three. Its role is on the target side: the final-equality comparisons evaluate at the landing point $\mathbf{u}\in\mathsf{U}$, and the chamber keeps these \emph{degenerate} comparisons a fixed distance from their tie hyperplanes, as the full proof checks below.
+
+\smallskip\noindent We record the branch fixed as a scenario.
+\begin{scen}\leavevmode
+\begin{enumerate}[label=(\arabic*)]
+\item each round opens with a fall: a node is drawn with probability $\boldsymbol{\mu}_0$ and receives a deposit $b^{\sharp}_{t_r}\sim\mathrm{Unif}(0,b)$, and the falls cycle through $v_1,\dots,v_n$ in order over $nL$ rounds ($L$ cycles), hitting all the cyclic targets with probability at least $\bigl(\min_i \boldsymbol{\mu}_0(v_i)\bigr)^m$\uline{, every fall deposit landing a margin $\delta$ away from the ties};
+\item every non-fall step deposits a small but nonzero amount, at most $\varepsilon$, with probability at least $(\varepsilon/b)^{nLT_{\max}}$\uline{, with $\varepsilon$ small enough to preserve every comparison settled in (1)};
+\item the round's branch \uline{can be suitably pinned down: with every comparison thus settled, the walker follows the prescribed branch $\amalg$ with probability at least $(1/n)^{2nL(n-1)}$};
+\item each round's change in the anchored height $\mathring{\mathbf{h}}$ depends on $\mathbf{b}^{\sharp}$, $\amalg$, and $\mathbf{b}^{\flat}$ together, \uline{with $\amalg$ now fixed, so that $\mathbf{A}^{\flat}_{\amalg}$ is a plain fixed linear map};
+\item the height difference after $m=nL$ rounds equals $\mathbf{u} = \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp} + \mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}$, landing in $\mathsf{U}$.
+\end{enumerate}
+\end{scen}
+
+\smallskip\noindent Fixing the branch is what makes the rest linear. The non-fall contribution $\mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}$ is no longer a path-dependent object but a fixed linear map, and we can study the joint law of $\mathbf{b}^{\sharp}$ and $\mathbf{b}^{\flat}$ in earnest.
+
+\smallskip\noindent The fall shift $\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$ ranges over a bounded set as $\mathbf{b}^{\sharp}$ runs over the cube $[0,b]^{nL}$; since $\mathbf{A}^{\sharp}$ has full row rank it has a right inverse $(\mathbf{A}^{\sharp})^{+}$ (so $\mathbf{A}^{\sharp}(\mathbf{A}^{\sharp})^{+} = \mathbf{I}$), introduced here for the transport step below. A single block lands its anchored difference with a density floor on the open $\ell^\infty$-disk $\mathsf{D}_\infty(r) := \{\mathbf{d}\in\mathbb{R}^{n-1} : \|\mathbf{d}\|_\infty < r\}$ (with closure $\overline{\mathsf{D}}_\infty(r) := \{\mathbf{d} : \|\mathbf{d}\|_\infty\leq r\}$), here at radius $r=\tfrac{b}{4}$. Stacking $L$ blocks makes the $L$-fold Minkowski sum $L\mathsf{D}_\infty(\tfrac{b}{4}) := \{\mathbf{d}_1+\cdots+\mathbf{d}_L : \mathbf{d}_\ell\in\mathsf{D}_\infty(\tfrac{b}{4})\}$ the natural envelope on which the fall density is large, though only its interior carries the floor stably, since the density tapers at the edge of $L\mathsf{D}_\infty(\tfrac{b}{4})$. We do not use all of $L\mathsf{D}_\infty(\tfrac{b}{4})$: some fall vectors bring a height comparison within $\delta$ of a tie, and these thin slabs must be excised from the cube. Write
+\[
+  \operatorname{Im}^{\sharp} \;:=\; \{\mathbf{a}^{\sharp} : \mathbf{a}^{\sharp} = \mathbf{A}^{\sharp}\mathbf{b}^{\sharp},\ \mathbf{b}^{\sharp}\in[0,b]^{nL}\}
+\]
+for the height-differences the falls can \emph{reach}; excising the tie-danger slabs leaves the tie-free reach
+\[
+  \operatorname{Im}^{\sharp}_{\delta} \;:=\; \{\mathbf{a}^{\sharp}\in\operatorname{Im}^{\sharp} : \text{every comparison stays a margin }\delta\text{ from a tie}\} .
+\] Writing $\dot{\mathsf{H}}_0 := \{\mathring{\mathbf{h}}(s^{\star}) : s^{\star}\in\mathsf{C}_0\}$ for the anchored start-heights, the fall targets $\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})$ ($\mathbf{u}\in\overline{\mathsf{U}}$, $s^{\star}\in\mathsf{C}_0$) form the Minkowski sum $\overline{\mathsf{U}}\oplus(-\dot{\mathsf{H}}_0)$, where $\mathsf{A}\oplus\mathsf{D} := \{\mathbf{a}+\mathbf{d} : \mathbf{a}\in\mathsf{A},\,\mathbf{d}\in\mathsf{D}\}$ and $-\mathsf{A} := \{-\mathbf{a} : \mathbf{a}\in\mathsf{A}\}$ is the reflection through the origin; so if $\overline{\mathsf{U}}\oplus(-\dot{\mathsf{H}}_0)\subseteq\operatorname{Im}^{\sharp}_{\delta}$, the fall deposits alone (with no non-fall deposit, $\mathbf{b}^{\flat}=\mathbf{0}$) land any $s^{\star}\in\mathsf{C}_0$ in any Borel $\mathsf{B}\subseteq\mathsf{U}$.
+
+\smallskip\noindent With the branch fixed, the non-fall deposits shift the height-difference by the non-fall image $\mathbf{a}^{\flat}=\mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}$, of $\ell^\infty$-size at most $nLT_{\max}\varepsilon$; choosing $\varepsilon$ small enough ($\varepsilon\leq b/(8nT_{\max})$) keeps $nLT_{\max}\varepsilon\leq Lb/8$, so the non-fall images form $\operatorname{Im}^{\flat}_{\varepsilon,\amalg} := \{\mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat} : \mathbf{b}^{\flat}\in[0,\varepsilon]^{nLT_{\max}}\}\subseteq\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$ (the non-fall wobbles). To land despite every such wobble, each fall target $\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})$ must sit a margin $Lb/8$ inside the tie-free reach, i.e.\ in its robust inner part, the Minkowski difference (erosion) $\operatorname{Im}^{\sharp}_{\delta}\ominus\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8}) := \{\mathbf{x} : \mathbf{x}+\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})\subseteq\operatorname{Im}^{\sharp}_{\delta}\} = \bigcap_{\mathbf{d}\in\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})}(\operatorname{Im}^{\sharp}_{\delta})_{-\mathbf{d}}$ (translate $\mathsf{A}_{-\mathbf{b}} := \{\mathbf{a}-\mathbf{b} : \mathbf{a}\in\mathsf{A}\}$):
+\[
+  \underbrace{\overline{\mathsf{U}}\oplus(-\dot{\mathsf{H}}_0)\subseteq\operatorname{Im}^{\sharp}_{\delta}\ominus\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})}_{\text{each start point sits a margin }Lb/8\text{ inside the reach}} .
+\]
+
+\smallskip\noindent Equivalently, by the adjunction $\mathsf{A}\oplus\mathsf{D}\subseteq\mathsf{C} \Leftrightarrow \mathsf{A}\subseteq\mathsf{C}\ominus\mathsf{D}$, one may instead grow each target into its wobble cloud and collect the results into the \emph{wobbled target set}
+\[
+\begin{aligned}
+  \mathsf{K} &\;:=\; \overline{\mathsf{U}}\oplus(-\dot{\mathsf{H}}_0)\oplus(-\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})) \\
+  &\;=\; \overline{\mathsf{U}}\oplus\dot{\mathsf{H}}_0\oplus\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})
+     \quad (\because \dot{\mathsf{H}}_0,\ \overline{\mathsf{D}}_\infty(\tfrac{Lb}{8}) \text{ are symmetric about the origin})
+\end{aligned}
+\]
+and require it to lie in the reach:
+\[
+  \underbrace{\mathsf{K}\subseteq\operatorname{Im}^{\sharp}_{\delta}}_{\text{every wobbled target lies in the reach}} .
+\]
+The slack $Lb/8$ is \emph{carved from the reach} in the first form and \emph{added to the target} in the second; since the wobble disk $\{\|\mathbf{a}^{\flat}\|_\infty\leq Lb/8\}$ is symmetric about the origin, the two give the same condition. For $\mathsf{U}$ near the origin both hold with room to spare, the chamber clear of the ties. The full proof secures more than mere reachability $\mathsf{K}\subseteq\operatorname{Im}^{\sharp}_{\delta}$: it puts a uniform \emph{slice floor} $m_0>0$ on the fall mass over every target in $\mathsf{K}$ (the fall density over $\mathsf{K}$ is an $L$-fold convolution of the single-block density, bounded below on the compact $\mathsf{K}$); cutting the tie tubes and cube-boundary strips costs only an $O(\delta)$ share, leaving a deposit-side \emph{robust core}; and the right inverse $(\mathbf{A}^{\sharp})^{+}$ \emph{transports} the surviving mass unchanged under the non-fall shift. None of this would be linear were the branch not fixed in Scenario~5.
+
+\smallskip\noindent The sketch closes with the scenario the full proof lower-bounds.
+\begin{scen}\leavevmode
+\begin{enumerate}[label=(\arabic*)]
+\item each round opens with a fall: a node is drawn with probability $\boldsymbol{\mu}_0$ and receives a deposit $b^{\sharp}_{t_r}\sim\mathrm{Unif}(0,b)$, and the falls cycle through $v_1,\dots,v_n$ in order over $nL$ rounds ($L$ cycles), hitting all the cyclic targets with probability at least $\bigl(\min_i \boldsymbol{\mu}_0(v_i)\bigr)^m$, every fall deposit landing a margin $\delta$ away from the ties;
+\item every non-fall step deposits a small but nonzero amount, at most $\varepsilon$, with probability at least $(\varepsilon/b)^{nLT_{\max}}$, with $\varepsilon$ small enough to preserve every comparison settled in (1);
+\item the round's branch is suitably pinned down: with every comparison thus settled, the walker follows the prescribed branch $\amalg$ with probability at least $(1/n)^{2nL(n-1)}$;
+\item each round's change in the anchored height $\mathring{\mathbf{h}}$ depends on $\mathbf{b}^{\sharp}$, $\amalg$, and $\mathbf{b}^{\flat}$ together, with $\amalg$ fixed, so that $\mathbf{A}^{\flat}_{\amalg}$ is a plain fixed linear map;
+\item the height difference after $m=nL$ rounds equals $\mathbf{u} = \mathring{\mathbf{h}}(s^{\star}) + \mathbf{A}^{\sharp}\mathbf{b}^{\sharp} + \mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}$, landing in $\mathsf{U}$ \uline{with a uniform mass floor: each target $\mathbf{u}\in\mathsf{U}$ is realised, after the non-fall shift, by a fall fibre of positive Lebesgue measure bounded below uniformly in $s^{\star}$, $\mathbf{u}$, and $\mathbf{b}^{\flat}$}.
+\end{enumerate}
+\end{scen}
+
+\smallskip\noindent Every factor of $\eta$ is now in hand. The discrete floors of items (1)--(3) and the mass floor of item (5) (the slice mass $m_0>0$ over $\mathsf{K}$, which the change of variables below turns into a fall-density floor $c_*>0$ on $\mathsf{U}$) multiply into
+\[
+  \eta \;=\; \mu_{\min}^{nL}\,(1/n)^{2nL(n-1)}\,(\varepsilon/b)^{nLT_{\max}}\,c_*\,|\mathsf{U}|_{\mathrm{Leb}} \;>\; 0 ,
+\]
+so from any start $s^{\star}\in\mathsf{C}_0$ the walker lands in any Borel $\mathsf{B}\subseteq\mathsf{U}$ with probability at least $\eta\,|\mathsf{B}|_{\mathrm{Leb}}/|\mathsf{U}|_{\mathrm{Leb}}$, a positive floor uniform in $s^{\star}$. That is the small-set inequality, so $\mathsf{C}_0$ is small. It remains only to make the one step the sketch took on faith (the mass floor of item (5)) rigorous; the full proof below does so.
+\end{proof}
+
+\begin{proof}
+We must exhibit $\eta>0$ with $(P^{\star})^{nL}(s^{\star},\cdot) \geq \eta\,\mathrm{Unif}(\mathsf{U})\otimes\delta_{v_n}$ for every $s^{\star}\in\mathsf{C}_0$, over the window of $nL$ rounds, $L := \lceil 16M_0/b+3\rceil$ cyclic sweeps of the $n$ falls.
+
+\smallskip\noindent\textbf{Claim 1.}\quad The window's $nL$ fall deposits are i.i.d.\ $\mathrm{Unif}(0,b)$, one per round's opening fall, forming $\mathbf{b}^{\sharp}\in[0,b]^{nL}$; index them by node and cycle, $\mathbf{b}^{\sharp}=(b^{\sharp}_{k,\ell})_{1\le k\le n,\,1\le\ell\le L}$. The \emph{per-block increment} $\mathring{\mathbf{b}}^{\sharp}_\ell := (b^{\sharp}_{2,\ell}-b^{\sharp}_{1,\ell},\ldots,b^{\sharp}_{n,\ell}-b^{\sharp}_{1,\ell})\in\mathbb{R}^{n-1}$ of the $n$ i.i.d.\ $\mathrm{Unif}(0,b)$ falls of cycle $\ell$ has a marginal density $f$, the same for every $\ell$, with $f \geq b^{1-n}/2$ on the disk $\mathsf{D}_\infty(\tfrac{b}{4})$, the anchored-height displacements one block can realise.
+
+\noindent\emph{Proof of Claim 1.}\quad We must show $f(\mathring{\mathbf{b}}^{\sharp}_\ell)\geq b^{1-n}/2$ for $\mathring{\mathbf{b}}^{\sharp}_\ell\in\mathsf{D}_\infty(\tfrac{b}{4})$ (writing $\mathbf{1}_{\mathsf{A}}$ for the indicator of a set $\mathsf{A}$, and $|\cdot|_{\mathrm{Leb}}$ for length). Fix the cycle $\ell$. The change of variables $\mathring{b}^{\sharp}_{i,\ell} := b^{\sharp}_{i,\ell}-b^{\sharp}_{1,\ell}$ ($i = 2,\ldots,n$), with $b^{\sharp}_{1,\ell}$ kept, is the linear map
+\[
+  \begin{pmatrix} b^{\sharp}_{1,\ell} \\ \mathring{b}^{\sharp}_{2,\ell} \\ \mathring{b}^{\sharp}_{3,\ell} \\ \vdots \\ \mathring{b}^{\sharp}_{n,\ell} \end{pmatrix}
+  =
+  \begin{pmatrix}
+    1 & 0 & 0 & \cdots & 0 \\
+    -1 & 1 & 0 & \cdots & 0 \\
+    -1 & 0 & 1 & \cdots & 0 \\
+    \vdots & \vdots & & \ddots & \\
+    -1 & 0 & 0 & \cdots & 1
+  \end{pmatrix}
+  \begin{pmatrix} b^{\sharp}_{1,\ell} \\ b^{\sharp}_{2,\ell} \\ b^{\sharp}_{3,\ell} \\ \vdots \\ b^{\sharp}_{n,\ell} \end{pmatrix},
+\]
+row $i\geq 2$ reading $\mathring{b}^{\sharp}_{i,\ell} = -b^{\sharp}_{1,\ell}+b^{\sharp}_{i,\ell} = b^{\sharp}_{i,\ell}-b^{\sharp}_{1,\ell}$. The Jacobian of a linear map is its matrix; this one is lower triangular with unit diagonal, so its determinant is $1$, and $f$ is the joint deposit density integrated over $b^{\sharp}_{1,\ell}$:
+\[
+\begin{aligned}
+  f(\mathring{\mathbf{b}}^{\sharp}_\ell)
+  &= \int_{\mathbb{R}} b^{-n}\prod_{i=1}^{n}\mathbf{1}_{[0,b]}(b^{\sharp}_{i,\ell})\,db^{\sharp}_{1,\ell} \\
+  &= b^{-n}\int_{\mathbb{R}} \mathbf{1}_{[0,b]}(b^{\sharp}_{1,\ell})\prod_{i=2}^{n}\mathbf{1}_{[0,b]}(b^{\sharp}_{1,\ell}+\mathring{b}^{\sharp}_{i,\ell})\,db^{\sharp}_{1,\ell}
+     \quad(\because\ b^{\sharp}_{i,\ell} = b^{\sharp}_{1,\ell}+\mathring{b}^{\sharp}_{i,\ell}\ \text{for } i\geq 2) \\
+  &= b^{-n}\int_{\mathbb{R}} \mathbf{1}_{[0,b]}(b^{\sharp}_{1,\ell})\prod_{i=2}^{n}\mathbf{1}_{[-\mathring{b}^{\sharp}_{i,\ell},\,b-\mathring{b}^{\sharp}_{i,\ell}]}(b^{\sharp}_{1,\ell})\,db^{\sharp}_{1,\ell}
+     \quad(\because\ \mathbf{1}_{[0,b]}(b^{\sharp}_{1,\ell}+\mathring{b}^{\sharp}_{i,\ell}) = \mathbf{1}_{[-\mathring{b}^{\sharp}_{i,\ell},\,b-\mathring{b}^{\sharp}_{i,\ell}]}(b^{\sharp}_{1,\ell})) \\
+  &= b^{-n}\bigl|[0,b]\cap\textstyle\bigcap_{i=2}^{n}[-\mathring{b}^{\sharp}_{i,\ell},\,b-\mathring{b}^{\sharp}_{i,\ell}]\bigr|_{\mathrm{Leb}} .
+\end{aligned}
+\]
+For $\mathring{\mathbf{b}}^{\sharp}_\ell\in\mathsf{D}_\infty(\tfrac{b}{4})$ every $|\mathring{b}^{\sharp}_{i,\ell}|<b/4$, so each interval $[-\mathring{b}^{\sharp}_{i,\ell},\,b-\mathring{b}^{\sharp}_{i,\ell}]$ is $[0,b]$ shifted by less than $b/4$ and hence contains the central $[b/4,\,3b/4]$; so does the intersection, of length $\geq b/2$ (Figure~\ref{fig:interval-floor}). The prefactor then leaves the floor:
+\[
+  f(\mathring{\mathbf{b}}^{\sharp}_\ell) \;\geq\; b^{-n}\cdot\tfrac{b}{2} \;=\; \tfrac{b^{1-n}}{2} \qquad(\mathring{\mathbf{b}}^{\sharp}_\ell\in\mathsf{D}_\infty(\tfrac{b}{4})).
+\]
+\hfill\qed
+
+\begin{figure}[t]
+\centering
+\includegraphics{fig_interval_floor.pdf}
+\caption{The density floor of Claim~1. For $\mathring{\mathbf{b}}^{\sharp}\in\mathsf{D}_\infty(\tfrac{b}{4})$ each coordinate has $|\mathring{b}^{\sharp}_i|<b/4$, so the interval $[-\mathring{b}^{\sharp}_i,\,b-\mathring{b}^{\sharp}_i]$ is the base interval $[0,b]$ translated by less than $b/4$. Every such interval therefore contains the central $[b/4,\,3b/4]$, and so does their intersection with $[0,b]$ (red), of length $\geq b/2$. The two extreme translations $\mathring{b}^{\sharp}_i\to\pm b/4$ pin the intersection to exactly $[b/4,\,3b/4]$.}
+\label{fig:interval-floor}
+\end{figure}
+
+\smallskip\noindent\textbf{Claim 2.}\quad The \emph{fall map} $\mathbf{A}^{\sharp}:\mathbb{R}^{nL}\to\mathbb{R}^{n-1}$ sends the fall vector $\mathbf{b}^{\sharp}\in[0,b]^{nL}$ to the cumulative anchored shift
+\[
+  \mathbf{A}^{\sharp}\mathbf{b}^{\sharp} \;=\; \Bigl(\textstyle\sum_\ell b^{\sharp}_{2,\ell}-\sum_\ell b^{\sharp}_{1,\ell},\ \ldots,\ \sum_\ell b^{\sharp}_{n,\ell}-\sum_\ell b^{\sharp}_{1,\ell}\Bigr) \;=\; \mathring{\mathbf{b}}^{\sharp}_1+\cdots+\mathring{\mathbf{b}}^{\sharp}_L ,
+\]
+the sum of the per-block increments of Claim~1. As an $L$-fold sum of the rank-$(n-1)$ per-block difference, $\mathbf{A}^{\sharp}$ has rank $n-1$, hence a right inverse $(\mathbf{A}^{\sharp})^{+}:\mathbb{R}^{n-1}\to\mathbb{R}^{nL}$ ($\mathbf{A}^{\sharp}(\mathbf{A}^{\sharp})^{+}=\mathbf{I}_{n-1}$, of finite operator norm); its kernel $\ker(\mathbf{A}^{\sharp})$ has dimension $nL-(n-1)$, and we fix a matrix $\mathbf{Z}^{\sharp}\in\mathbb{R}^{nL\times(nL-(n-1))}$ whose columns are an orthonormal basis of it ($\mathbf{A}^{\sharp}\mathbf{Z}^{\sharp}=\mathbf{0}$). Now let $\mathbf{b}^{\sharp}\sim\mathrm{Unif}([0,b]^{nL})$ with fall shift $\mathbf{a}^{\sharp} := \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$, and let $\mathbf{z}^{\sharp}$ be the kernel coordinate. Then:
+\begin{enumerate}[label=(\Roman*)]
+  \item the linear map $\mathbf{b}^{\sharp}\mapsto(\mathbf{z}^{\sharp},\mathbf{a}^{\sharp})$, splitting a deposit vector into its kernel coordinate $\mathbf{z}^{\sharp}$ and fall shift $\mathbf{a}^{\sharp}=\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$, is a bijection of $\mathbb{R}^{nL}$ onto $\mathbb{R}^{nL-(n-1)}\times\mathbb{R}^{n-1}$ with inverse $\mathbf{b}^{\sharp}=(\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}$ of positive constant Jacobian $J$;
+  \item for any measurable $\mathsf{B}^{\sharp}\subseteq\mathbb{R}^{nL}$, $\mathsf{B}\subseteq\mathbb{R}^{n-1}$,
+  \[
+    \mathbb{P}\bigl(\mathbf{b}^{\sharp}\in \mathsf{B}^{\sharp},\ \mathbf{a}^{\sharp}\in \mathsf{B}\bigr)
+    \;=\; b^{-nL}\,J\int_{\mathsf{B}}\bigl|\bigl\{\mathbf{z}^{\sharp} : (\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}\cap \mathsf{B}^{\sharp}\bigr\}\bigr|_{\mathrm{Leb}}\,d\mathbf{a}^{\sharp}
+  \]
+  that is, the integrand is the Lebesgue density at $\mathbf{a}^{\sharp}$ of the law of $\mathbf{a}^{\sharp}$ restricted to $\{\mathbf{b}^{\sharp}\in \mathsf{B}^{\sharp}\}$.
+\end{enumerate}
+
+\noindent\emph{Proof of Claim 2.}\quad \textit{(I).}\quad The block matrix $[(\mathbf{A}^{\sharp})^{+}\ \mathbf{Z}^{\sharp}]$ has trivial kernel: if $(\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp} = \mathbf{0}$, applying $\mathbf{A}^{\sharp}$ gives $\mathbf{a}^{\sharp} = \mathbf{0}$ ($\because\ \mathbf{A}^{\sharp}(\mathbf{A}^{\sharp})^{+} = \mathbf{I}_{n-1}$, $\mathbf{A}^{\sharp}\mathbf{Z}^{\sharp} = \mathbf{0}$), and then $\mathbf{z}^{\sharp} = \mathbf{0}$ ($\because$ the columns of $\mathbf{Z}^{\sharp}$ are independent). A square matrix with trivial kernel is invertible, so the map is a bijection, and being linear it has a positive constant Jacobian $J$.
+
+\smallskip\noindent\textit{(II).}
+\begin{align*}
+\MoveEqLeft[2] \mathbb{P}(\mathbf{b}^{\sharp}\in\mathsf{B}^{\sharp},\ \mathbf{a}^{\sharp}\in\mathsf{B})
+= b^{-nL}\int_{\mathbb{R}^{nL}} \mathbf{1}\{\mathbf{b}^{\sharp}\in\mathsf{B}^{\sharp}\}\,\mathbf{1}\{\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}\in\mathsf{B}\}\,\mathbf{1}\{\mathbf{b}^{\sharp}\in[0,b]^{nL}\}\,d\mathbf{b}^{\sharp} \\
+&= b^{-nL}\,J\int_{\mathbb{R}^{n-1}}\!\int_{\mathbb{R}^{nL-(n-1)}} \mathbf{1}\{\mathbf{b}^{\sharp}\in\mathsf{B}^{\sharp}\}\,\mathbf{1}\{\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}\in\mathsf{B}\}\,\mathbf{1}\{\mathbf{b}^{\sharp}\in[0,b]^{nL}\}\,d\mathbf{z}^{\sharp}\,d\mathbf{a}^{\sharp}
+     \quad (\because\ \text{bijection}) \\
+&= b^{-nL}\,J \int_{\mathbb{R}^{n-1}}\!\int_{\mathbb{R}^{nL-(n-1)}} \mathbf{1}\{\mathbf{a}^{\sharp}\in\mathsf{B}\}\,\mathbf{1}\{\mathbf{b}^{\sharp}\in[0,b]^{nL}\cap\mathsf{B}^{\sharp}\}\,d\mathbf{z}^{\sharp}\,d\mathbf{a}^{\sharp}
+     \quad (\because\ \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}=\mathbf{a}^{\sharp}) \\
+&= b^{-nL}\,J \int_{\mathsf{B}}\!\int_{\mathbb{R}^{nL-(n-1)}} \mathbf{1}\{\mathbf{b}^{\sharp}\in[0,b]^{nL}\cap\mathsf{B}^{\sharp}\}\,d\mathbf{z}^{\sharp}\,d\mathbf{a}^{\sharp} \\
+&= b^{-nL}\,J \int_{\mathsf{B}}\!\int_{\mathbb{R}^{nL-(n-1)}} \mathbf{1}\{(\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}\cap\mathsf{B}^{\sharp}\}\,d\mathbf{z}^{\sharp}\,d\mathbf{a}^{\sharp}
+     \quad (\because\ \mathbf{b}^{\sharp}=(\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}) \\
+&= b^{-nL}\,J \int_{\mathsf{B}} \bigl|\{\mathbf{z}^{\sharp} : (\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}\cap\mathsf{B}^{\sharp}\}\bigr|_{\mathrm{Leb}}\,d\mathbf{a}^{\sharp},
+\end{align*}
+which is the identity~(II). The second equality changes variables by $\mathbf{b}^{\sharp}=(\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}$: as a bijection of $\mathbb{R}^{n-1}\times\mathbb{R}^{nL-(n-1)}$ \emph{onto} $\mathbb{R}^{nL}$ it gives every $\mathbf{b}^{\sharp}$ a unique preimage, so the integral over all of $\mathbb{R}^{nL}$ becomes one over the \emph{entire} $(\mathbf{a}^{\sharp},\mathbf{z}^{\sharp})$-space (no restricted region) with constant Jacobian $J$; the cube $[0,b]^{nL}$ and the target $\mathsf{B}^{\sharp}$ ride along inside the indicators rather than as the integration domain; the final inner $\mathbf{z}^{\sharp}$-integral of the indicator is by definition the Lebesgue measure of its slice $\{\mathbf{z}^{\sharp}:(\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}\cap\mathsf{B}^{\sharp}\}$. \qed
+
+\smallskip\noindent\textbf{Claim 3.}\quad Let $\mathsf{U}$ be the chamber (near $\mathbf{0}$, inside one ordering chamber, hence clear of the height ties), its closure $\overline{\mathsf{U}}$ compact in the disk $\mathsf{D}_\infty(\tfrac{b}{4})$ of Claim~1, and $\mathsf{C}_0 = \{s^{\star} : M(s^{\star}) \leq M_0\}$ the petite sublevel set of the Foster drift; write $\dot{\mathsf{H}}_0 := \{\mathring{\mathbf{h}}(s^{\star}) : s^{\star}\in\mathsf{C}_0\}$ for the anchored start-heights. Set
+\[
+  \mathsf{K} := \{\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})-\mathbf{d} : \mathbf{u}\in\overline{\mathsf{U}},\ s^{\star}\in\mathsf{C}_0,\ \mathbf{d}\in\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})\} .
+\]
+Then:
+\begin{enumerate}[label=(\Roman*)]
+  \item $\mathsf{K}$ is compact, with $\ell^\infty$-norm $\leq \tfrac{Lb}{4} - \tfrac{b}{8}$ throughout;
+  \item the window's non-fall deposits (one independent $\mathrm{Unif}(0,b)$ per non-fall step, zero-padded to length $nLT_{\max}$) form $\mathbf{b}^{\flat}$, routed to the anchored height by the \emph{non-fall map} $\mathbf{A}^{\flat}_{\amalg}$ ($(n-1)\times nLT_{\max}$, entries in $\{0,1,-1\}$), fixed by the branch $\amalg$ (the walker's realised non-fall path) and branch-dependent unlike $\mathbf{A}^{\sharp}$. For $\varepsilon \leq b/(8nT_{\max})$, on $\mathsf{E}^{\flat} := [0,\varepsilon]^{nLT_{\max}}$ the non-fall image $\operatorname{Im}^{\flat}_{\varepsilon,\amalg} := \{\mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat} : \mathbf{b}^{\flat}\in\mathsf{E}^{\flat}\}$ satisfies $\operatorname{Im}^{\flat}_{\varepsilon,\amalg}\subseteq\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$. Every wobbled target $\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})-\mathbf{a}^{\flat}$ ($\mathbf{u}\in\mathsf{U}$, $s^{\star}\in\mathsf{C}_0$, $\mathbf{a}^{\flat}\in\operatorname{Im}^{\flat}_{\varepsilon,\amalg}$) then lies in $\mathsf{K}$.
+\end{enumerate}
+
+\noindent\emph{Proof of Claim 3.}\quad \textit{(I).}\quad The closure $\overline{\mathsf{U}}$ and the disk $\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$ are compact, and $\mathsf{C}_0$ is a compact sublevel set; hence the product $\overline{\mathsf{U}}\times\mathsf{C}_0\times\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$ is compact, and $\mathsf{K}$ is its image under the continuous map $(\mathbf{u},s^{\star},\mathbf{d})\mapsto\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})-\mathbf{d}$, hence compact. For the bound, every element has the form $\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})-\mathbf{d}$ ($\mathbf{u}\in\overline{\mathsf{U}}$, $s^{\star}\in\mathsf{C}_0$, $\mathbf{d}\in\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$), and the triangle inequality gives
+\[
+  \|\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})-\mathbf{d}\|_\infty \;\leq\; \|\mathbf{u}\|_\infty + \|\mathring{\mathbf{h}}(s^{\star})\|_\infty + \|\mathbf{d}\|_\infty \;<\; \tfrac{b}{4} + 2M_0 + \tfrac{Lb}{8}
+\]
+($\mathbf{u}\in \overline{\mathsf{U}}\subset\mathsf{D}_\infty(\tfrac{b}{4})$, so $\|\mathbf{u}\|_\infty < b/4$; $\|\mathring{\mathbf{h}}(s^{\star})\|_\infty\leq 2M(s^{\star})\leq 2M_0$, as each anchored difference is $\hbar(v_i,s^{\star})-\hbar(v_1,s^{\star})$ of modulus $\leq 2M(s^{\star})$; $\|\mathbf{d}\|_\infty\leq Lb/8$). Since $L = \lceil 16M_0/b + 3\rceil$ gives $Lb/8 \geq 2M_0 + 3b/8$,
+\[
+  \tfrac{Lb}{4} - \Bigl(\tfrac{b}{4} + 2M_0 + \tfrac{Lb}{8}\Bigr) \;=\; \tfrac{Lb}{8} - \tfrac{b}{4} - 2M_0 \;\geq\; \tfrac{b}{8} \;>\; 0 .
+\]
+
+\smallskip\noindent\textit{(II).}\quad Write $\|\mathbf{A}\|_{\infty\to\infty} := \max_i\sum_j|A_{ij}|$ for the $\ell^\infty$-operator norm (the maximum absolute row sum). On $\mathsf{E}^{\flat}$,
+\begin{align*}
+\|\mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat}\|_\infty
+&\leq \max_i \sum_j |(\mathbf{A}^{\flat}_{\amalg})_{ij}|\,|b^{\flat}_j|
+\leq \Bigl(\max_i \sum_j |(\mathbf{A}^{\flat}_{\amalg})_{ij}|\Bigr)\|\mathbf{b}^{\flat}\|_\infty
+= \|\mathbf{A}^{\flat}_{\amalg}\|_{\infty\to\infty}\,\|\mathbf{b}^{\flat}\|_\infty \\
+&\leq nLT_{\max}\,\|\mathbf{b}^{\flat}\|_\infty
+   \quad (\because \text{entries in } \{0,1,-1\},\ nLT_{\max} \text{ columns}) \\
+&\leq nLT_{\max}\,\varepsilon
+   \quad (\because \|\mathbf{b}^{\flat}\|_\infty \leq \varepsilon \text{ on } \mathsf{E}^{\flat}) .
+\end{align*}
+Choosing the non-fall deposits small enough, $\varepsilon \leq b/(8nT_{\max})$, makes this $\leq Lb/8$, so $\operatorname{Im}^{\flat}_{\varepsilon,\amalg}\subseteq\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$. Each such target then has $\mathbf{u}\in\mathsf{U}\subseteq\overline{\mathsf{U}}$, $s^{\star}\in\mathsf{C}_0$, and $\mathbf{a}^{\flat}\in\operatorname{Im}^{\flat}_{\varepsilon,\amalg}\subseteq\overline{\mathsf{D}}_\infty(\tfrac{Lb}{8})$, so it lies in $\mathsf{K}$ by its defining form. \qed
+
+\smallskip\noindent\textbf{Claim 4.}\quad The $L$-fold convolution $f^{\ast L}$ of the per-block density $f$ (Claim 1) is uniformly bounded below by a positive constant on $\mathsf{K}$ (the compact target of Claim 3).
+
+\smallskip
+\noindent\emph{Proof of Claim 4.}\quad We must show $f^{\ast L}(\mathbf{k})\geq C$ for all $\mathbf{k}\in\mathsf{K}$, for some constant $C>0$. For $r>0$ let
+\[
+  \mathsf{Q}_r := \Bigl\{(\mathring{\mathbf{b}}^{\sharp}_1,\ldots,\mathring{\mathbf{b}}^{\sharp}_{L-1})\in\mathbb{R}^{(n-1)(L-1)} : \max_{\ell<L}\|\mathring{\mathbf{b}}^{\sharp}_\ell-\mathbf{k}/L\|_\infty < r\Bigr\}
+\]
+be the box of side $2r$ about $\mathbf{k}/L$ in each of the $L-1$ free coordinates, of volume $(2r)^{(n-1)(L-1)}$ (the last piece is $\mathring{\mathbf{b}}^{\sharp}_L:=\mathbf{k}-\sum_{\ell<L}\mathring{\mathbf{b}}^{\sharp}_\ell$). It suffices to find $r>0$, independent of $\mathbf{k}$, with
+\[
+  (\mathring{\mathbf{b}}^{\sharp}_1,\ldots,\mathring{\mathbf{b}}^{\sharp}_{L-1})\in\mathsf{Q}_r
+  \implies \mathring{\mathbf{b}}^{\sharp}_1,\ldots,\mathring{\mathbf{b}}^{\sharp}_L\in\mathsf{D}_\infty(\tfrac{b}{4}). \tag*{$(\ast)$}
+\]
+Then, by $(\ast)$ and Claim 1, every factor is at least $b^{1-n}/2$ on $\mathsf{Q}_r$, so
+\begin{align*}
+  f^{\ast L}(\mathbf{k})
+  &= \int_{\mathbb{R}^{(n-1)(L-1)}}\prod_{\ell=1}^{L} f(\mathring{\mathbf{b}}^{\sharp}_\ell)\,d\mathring{\mathbf{b}}^{\sharp}_1\cdots d\mathring{\mathbf{b}}^{\sharp}_{L-1} \\
+  &\geq \int_{\mathsf{Q}_r}\prod_{\ell=1}^{L} f(\mathring{\mathbf{b}}^{\sharp}_\ell)\,d\mathring{\mathbf{b}}^{\sharp}_1\cdots d\mathring{\mathbf{b}}^{\sharp}_{L-1}
+  \qquad(\because\ \textstyle\prod_\ell f\geq 0) \\
+  &\geq \int_{\mathsf{Q}_r} (b^{1-n}/2)^L\,d\mathring{\mathbf{b}}^{\sharp}_1\cdots d\mathring{\mathbf{b}}^{\sharp}_{L-1}
+  \qquad(\because\ (\ast),\ \text{Claim 1}) \\
+  &= (b^{1-n}/2)^L\,(2r)^{(n-1)(L-1)} =: C > 0 ,
+\end{align*}
+a positive constant independent of $\mathbf{k}$.
+
+\smallskip
+\noindent It now remains to find such an $r$. Recall $\mathring{\mathbf{b}}^{\sharp}_L-\mathbf{k}/L=\sum_{\ell<L}(\mathbf{k}/L-\mathring{\mathbf{b}}^{\sharp}_\ell)$, $L\geq 2$, and (Claim 3) $\|\mathbf{k}\|_\infty\leq\tfrac{Lb}{4}-\tfrac{b}{8}$, so $\|\mathbf{k}/L\|_\infty\leq\tfrac{b}{4}-\tfrac{b}{8L}$. Take $r:=\tfrac{b}{16L(L-1)}$, so $(L-1)r=\tfrac{b}{16L}$. Suppose $(\mathring{\mathbf{b}}^{\sharp}_1,\ldots,\mathring{\mathbf{b}}^{\sharp}_{L-1})\in\mathsf{Q}_r$. Then each piece is within $\tfrac{b}{16L}$ of $\mathbf{k}/L$, by two cases:
+\begin{align*}
+\text{Case 1}\ (\ell<L):\quad
+  &\|\mathring{\mathbf{b}}^{\sharp}_\ell-\mathbf{k}/L\|_\infty < r \leq (L-1)r = \tfrac{b}{16L}, \\
+\text{Case 2}\ (\ell=L):\quad
+  &\|\mathring{\mathbf{b}}^{\sharp}_L-\mathbf{k}/L\|_\infty = \Bigl\|\textstyle\sum_{\ell<L}(\mathbf{k}/L-\mathring{\mathbf{b}}^{\sharp}_\ell)\Bigr\|_\infty \leq \textstyle\sum_{\ell<L}\|\mathbf{k}/L-\mathring{\mathbf{b}}^{\sharp}_\ell\|_\infty < (L-1)r = \tfrac{b}{16L}.
+\end{align*}
+Hence $\|\mathring{\mathbf{b}}^{\sharp}_\ell-\mathbf{k}/L\|_\infty<\tfrac{b}{16L}$ for all $\ell$, so
+\[
+  \|\mathring{\mathbf{b}}^{\sharp}_\ell\|_\infty \leq \|\mathbf{k}/L\|_\infty + \tfrac{b}{16L} < \tfrac{b}{4} \quad(\forall\ell),
+\]
+the first inequality by the triangle inequality, the second by Claim 3 ($\|\mathbf{k}/L\|_\infty\leq\tfrac{b}{4}-\tfrac{b}{8L}$). Thus $\mathring{\mathbf{b}}^{\sharp}_1,\ldots,\mathring{\mathbf{b}}^{\sharp}_L\in\mathsf{D}_\infty(\tfrac{b}{4})$; that is, $(\ast)$ holds. \qed
+
+\smallskip\noindent\textbf{Claim 5.}\quad With $r$ the radius of Claim~4, $J>0$ the constant Jacobian of Claim~2, and $\mathsf{K}$ the compact target of Claim~3, for every $\mathbf{k}\in\mathsf{K}$,
+\[
+  \bigl|\{\mathbf{z}^{\sharp} : (\mathbf{A}^{\sharp})^{+}\mathbf{k}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}\}\bigr|_{\mathrm{Leb}} \;\geq\; m_0 := \frac{b^{nL}(b^{1-n}/2)^L\,(2r)^{(n-1)(L-1)}}{J}.
+\]
+
+\noindent\emph{Proof of Claim 5.}\quad Fix $\mathbf{k}\in\mathsf{K}$ and, for $\mathbf{a}^{\sharp}\in\mathbb{R}^{n-1}$, write
+\[
+  \mathsf{Fibre}(\mathbf{a}^{\sharp}) := \{\mathbf{z}^{\sharp} : (\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}\}
+\]
+for the slice at $\mathbf{a}^{\sharp}$. We must show $|\mathsf{Fibre}(\mathbf{k})|_{\mathrm{Leb}}\geq m_0$.
+
+\smallskip
+\noindent Let $\mathbf{b}^{\sharp}\sim\mathrm{Unif}([0,b]^{nL})$ with fall shift $\mathbf{a}^{\sharp} := \mathbf{A}^{\sharp}\mathbf{b}^{\sharp}$. For any $\mathsf{B}\subseteq\mathbb{R}^{n-1}$,
+\begin{align*}
+\mathbb{P}(\mathbf{a}^{\sharp}\in\mathsf{B})
+&= \mathbb{P}(\mathbf{b}^{\sharp}\in\mathbb{R}^{nL},\ \mathbf{a}^{\sharp}\in\mathsf{B}) \\
+&= b^{-nL}J\int_{\mathsf{B}} |\mathsf{Fibre}(\mathbf{a}^{\sharp})|_{\mathrm{Leb}}\,d\mathbf{a}^{\sharp}
+   \quad (\because\ \text{Claim~2(II) with } \mathsf{B}^{\sharp}=\mathbb{R}^{nL}) .
+\end{align*}
+Since $f^{\ast L}$ is the density of $\mathbf{a}^{\sharp}=\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}=\mathring{\mathbf{b}}^{\sharp}_1+\cdots+\mathring{\mathbf{b}}^{\sharp}_L$ (a sum of $L$ i.i.d.\ per-block increments of density $f$, Claim 1), one also has $\mathbb{P}(\mathbf{a}^{\sharp}\in\mathsf{B})=\int_{\mathsf{B}} f^{\ast L}(\mathbf{a}^{\sharp})\,d\mathbf{a}^{\sharp}$; matching integrands over every $\mathsf{B}$ gives $f^{\ast L}(\mathbf{a}^{\sharp})=b^{-nL}J\,|\mathsf{Fibre}(\mathbf{a}^{\sharp})|_{\mathrm{Leb}}$, i.e.\ $|\mathsf{Fibre}(\mathbf{a}^{\sharp})|_{\mathrm{Leb}}=\tfrac{b^{nL}}{J}f^{\ast L}(\mathbf{a}^{\sharp})$, for every $\mathbf{a}^{\sharp}\in\mathbb{R}^{n-1}$. Evaluating at $\mathbf{a}^{\sharp}=\mathbf{k}$, the convolution floor of Claim 4 ($f^{\ast L}(\mathbf{k})\geq (b^{1-n}/2)^L(2r)^{(n-1)(L-1)}$ on $\mathsf{K}$) gives
+\[
+  |\mathsf{Fibre}(\mathbf{k})|_{\mathrm{Leb}} = \frac{b^{nL}}{J}\,f^{\ast L}(\mathbf{k}) \;\implies\; |\mathsf{Fibre}(\mathbf{k})|_{\mathrm{Leb}} \geq m_0 > 0 .
+\]
+\hfill\qed
+
+\smallskip\noindent
+
+\smallskip\noindent For $\mathbf{x} = (x_2,\ldots,x_n)\in\mathbb{R}^{n-1}$ in the anchored coordinates, with the convention $x_1 := 0$ for the anchor $v_1$, write $\Delta_{ij}(\mathbf{x}) := x_i - x_j$ for the $(i,j)$ height gap; thus $\Delta_{ij}(\mathring{\mathbf{h}}(t)) = \hbar(v_i,t)-\hbar(v_j,t)$. At $\mathbf{b}^{\flat}=\mathbf{0}$ the heights change only at falls, so every flow step of the window sees the anchored height as it stands after the window's first $\rho$ falls, for some $\rho\in\{1,\ldots,nL\}$. The gaps a flow step can test are therefore exhausted by the \emph{height comparisons}
+\[
+  \mathsf{A} \;:=\; \bigl\{\,a = (i,j,\rho) : 1\leq i\neq j\leq n,\ 1\leq\rho\leq nL\,\bigr\},
+  \qquad |\mathsf{A}| \;=\; n(n-1)\,nL,
+\]
+a fixed finite set (which comparisons a realised trajectory actually tests depends on the deposits; $\mathsf{A}$ contains them all). For $a = (i,j,\rho)$ define $\boldsymbol{\alpha}_a\in\{0,\pm1\}^{nL}$ entrywise, listing the coordinates in fall order: the $\rho'$-th coordinate belongs to the window's $\rho'$-th fall, which under the cyclic schedule lands on $v_{((\rho'-1)\bmod n)+1}$ (in Claim 1's node-and-cycle labels this is the deposit $b^{\sharp}_{k,\ell}$ with $\rho' = n(\ell-1)+k$), and
+\[
+  (\boldsymbol{\alpha}_a)_{\rho'} \;:=\;
+  \begin{cases}
+    +1, & \rho'\leq\rho \text{ and the } \rho'\text{-th fall lands on } v_i,\\
+    -1, & \rho'\leq\rho \text{ and the } \rho'\text{-th fall lands on } v_j,\\
+    \hphantom{+}0, & \text{otherwise},
+  \end{cases}
+  \qquad \rho' = 1,\ldots,nL:
+\]
+read in time order, each entry answers whether that fall has happened yet ($\rho'\leq\rho$) and on which of the two nodes it landed. Thus $\boldsymbol{\alpha}_a\cdot\mathbf{b}^{\sharp}$ adds the deposits landed on $v_i$ and subtracts those landed on $v_j$ among the first $\rho$ falls, and the gap tested by $a$ is $\Delta_{ij}(\mathring{\mathbf{h}}(s^{\star})) + \boldsymbol{\alpha}_a\cdot\mathbf{b}^{\sharp}$, the start's gap plus the net deposit shift.
+
+\smallskip\noindent\textbf{Claim 6.}\quad Fix $\mathbf{b}^{\flat}=\mathbf{0}$ and condition on the window's cyclic fall schedule. On any event where each comparison in $\mathsf{A}$ is \emph{resolved}, meaning its strictly-lower outcome is constant over the event (an exact tie reads `not strictly lower', deterministically), the resolved pattern alone determines the strictly-lower set at every flow step of the window, and for any branch $\amalg$ consistent with that pattern the walker realises $\amalg$ with probability at least $(1/n)^{2nL(n-1)}$.
+
+\noindent\emph{Proof of Claim 6.}\quad 추후 작성 예정.
+
+\smallskip\noindent\textbf{Claim 7.}\quad On the fiber over $\mathbf{a}^{\sharp}$, that is $\mathbf{b}^{\sharp} = (\mathbf{A}^{\sharp})^{+}\mathbf{a}^{\sharp}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}$ in the coordinates of Claim 2(II) ($\mathbf{Z}^{\sharp}$ the kernel basis; this parametrisation is used from here on), each gap is affine in $\mathbf{z}^{\sharp}$ with gradient $(\mathbf{Z}^{\sharp})^{\top}\boldsymbol{\alpha}_a$. Call $a$ \emph{degenerate} when this gradient vanishes, so that its gap is constant on the whole fiber; the others form the \emph{nondegenerate} set
+\[
+  \mathsf{A}_{\mathrm{nd}} \;:=\; \bigl\{\,a\in\mathsf{A} : (\mathbf{Z}^{\sharp})^{\top}\boldsymbol{\alpha}_a\neq\mathbf{0}\,\bigr\}.
+\]
+One linear-algebra observation is used twice below: reading off the block form of $\mathbf{A}^{\sharp}$ (Claim 2), its row space $\operatorname{Range}((\mathbf{A}^{\sharp})^{\top})$ consists of exactly the vectors constant within each \emph{node group} (the $k$-th node group collecting the $L$ coordinates of the falls on $v_k$) whose $n$ group values sum to zero. Finally set
+\[
+  \kappa_{\mathsf{U}} \;:=\; \min_{i\neq j}\,\inf_{\mathbf{u}\in\overline{\mathsf{U}}}\,\bigl|\Delta_{ij}(\mathbf{u})\bigr| ,
+\]
+the chamber's margin from the ties: $\kappa_{\mathsf{U}}>0$ because $\overline{\mathsf{U}}$ is compact and disjoint from the finitely many tie hyperplanes $\{\mathbf{x} : \Delta_{ij}(\mathbf{x}) = 0\}$ (Claim 3), and each $|\Delta_{ij}|$ is continuous. Resolving every comparison (the hypothesis of Claim 6) is now priced in two parts: the degenerate comparisons cost nothing, and the nondegenerate ties cost $O(\delta)$. For every $\mathbf{a}^{\sharp}\in\mathbb{R}^{n-1}$, state $s^{\star}$, and $\delta>0$:
+\begin{enumerate}[label=(\Roman*)]
+  \item every degenerate comparison either ignores the fall deposits or is pinned to the chamber: if $\boldsymbol{\alpha}_a = \mathbf{0}$ the fall deposits drop out of $a$ entirely, its value a function of the start and the non-fall deposits alone, resolved regionwise in Claim 9; otherwise $a$ is of \emph{final-equality} type $\boldsymbol{\alpha}_a\cdot\mathbf{b}^{\sharp} = \sum_\ell b^{\sharp}_{i,\ell}-\sum_\ell b^{\sharp}_{j,\ell}$, whose value at any fall shift $\mathbf{A}^{\sharp}\mathbf{b}^{\sharp} = \mathbf{u}-\mathring{\mathbf{h}}(s^{\star})$ ($\mathbf{u}\in \mathsf{U}$) is pinned to the chamber,
+  \[
+    \Delta_{ij}(\mathring{\mathbf{h}}(s^{\star})) + \boldsymbol{\alpha}_a\cdot\mathbf{b}^{\sharp} \;=\; \Delta_{ij}\bigl(\mathring{\mathbf{h}}(s^{\star})+\mathbf{A}^{\sharp}\mathbf{b}^{\sharp}\bigr) \;=\; \Delta_{ij}(\mathbf{u}),
+    \qquad |\Delta_{ij}(\mathbf{u})| \;\geq\; \kappa_{\mathsf{U}} ;
+    \tag{$\ast$}
+  \]
+  \item the nondegenerate ties cost little: there is a graph-data constant $C_{\mathrm{tie}}<\infty$ with
+  \[
+    \Bigl|\Bigl\{\mathbf{z}^{\sharp} : \mathbf{b}^{\sharp}\in[0,b]^{nL},\ \min_{a\in\mathsf{A}_{\mathrm{nd}}}|\boldsymbol{\alpha}_a\cdot\mathbf{b}^{\sharp}+\Delta_{ij}(\mathring{\mathbf{h}}(s^{\star}))|\leq\delta\Bigr\}\Bigr|_{\mathrm{Leb}}\leq C_{\mathrm{tie}}\,\delta ;
+  \]
+\end{enumerate}
+
+\noindent\emph{Proof of Claim 7.}\quad 추후 작성 예정.
+
+\smallskip\noindent\textbf{Claim 8.}\quad The other cost, keeping every fall deposit a margin $\delta$ off the cube boundary, is cheap too, and after the two cuts a core with a mass floor remains. For every $\mathbf{a}^{\sharp}\in\mathbb{R}^{n-1}$, state $s^{\star}$, and $\delta>0$:
+\begin{enumerate}[label=(\Roman*)]
+  \item there is a graph-data constant $C_{\mathrm{bdry}}<\infty$ with
+  \[
+    \bigl|\bigl\{\mathbf{z}^{\sharp} : \mathbf{b}^{\sharp}\in[0,b]^{nL},\ \textstyle\min_j b^{\sharp}_j\leq\delta\ \text{or}\ \min_j(b-b^{\sharp}_j)\leq\delta\bigr\}\bigr|_{\mathrm{Leb}}\leq C_{\mathrm{bdry}}\,\delta ;
+  \]
+  \item if moreover $(C_{\mathrm{tie}}+C_{\mathrm{bdry}})\,\delta\leq m_0/2$ and $\delta\leq\kappa_{\mathsf{U}}$, the \emph{robust core}
+  \[
+    \mathsf{R}_\delta(s^{\star}) := \{\delta\leq b^{\sharp}_j\leq b-\delta\ \forall j\}\cap\!\!\bigcap_{a\in\mathsf{A}_{\mathrm{nd}}}\!\!\{|\boldsymbol{\alpha}_a\cdot \mathbf{b}^{\sharp}+\Delta_{ij}(\mathring{\mathbf{h}}(s^{\star}))|\geq\delta\} \;\subseteq\; [0,b]^{nL}
+  \]
+  satisfies
+  \[
+    \bigl|\{\mathbf{z}^{\sharp} : (\mathbf{A}^{\sharp})^{+}\mathbf{k}+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in\mathsf{R}_\delta(s^{\star})\}\bigr|_{\mathrm{Leb}}\geq m_* := m_0/2
+  \]
+  for all $\mathbf{k}\in \mathsf{K}$, $s^{\star}\in \mathsf{C}_0$; on it, at any chamber target, every fall-dependent comparison is strictly signed (nondegenerate ones by the $\delta$-margin, final-equality ones by Claim 7(I)); the $\boldsymbol{\alpha}_a=\mathbf{0}$ comparisons involve no fall coordinate and cut nothing here, so the core splits by the fall-side sign pattern,
+  \[
+    \mathsf{R}_\delta(s^{\star}) \;=\; \bigsqcup_{\amalg}\mathsf{R}_{\delta,\amalg},
+  \]
+  with $\mathsf{R}_{\delta,\amalg}$ the deposit vectors whose sign pattern drives the branch $\amalg$.
+\end{enumerate}
+
+\noindent\emph{Proof of Claim 8.}\quad 추후 작성 예정.
+
+\smallskip\noindent\textbf{Claim 9.}\quad Even off $\mathbf{b}^{\flat}=\mathbf{0}$, the branch pinned at $\mathbf{b}^{\flat}=\mathbf{0}$ stays pinned. The mechanism: once the branch is pinned, the non-fall routing is pinned with it, entering the anchored height only through the fixed linear map $\mathbf{A}^{\flat}_{\amalg}$ of Claim 3, not through a shift known only in hindsight, so the perturbation it causes is linear and small. Precisely: for any $\mathbf{b}^{\flat}\in[0,\varepsilon]^{nLT_{\max}}$, $\mathbf{u}\in \mathsf{U}$, and branch $\amalg$ consistent with the outcomes $\mathbf{b}^{\flat}$ gives the $\boldsymbol{\alpha}_a=\mathbf{0}$ comparisons, every $\mathbf{z}^{\sharp}$ in the slice $\{\mathbf{z}^{\sharp} : (\mathbf{A}^{\sharp})^{+}(\mathbf{u}-\mathring{\mathbf{h}}(s^{\star}))+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in\mathsf{R}_{\delta,\amalg}\}$ also satisfies $(\mathbf{A}^{\sharp})^{+}(\mathbf{u}-\mathring{\mathbf{h}}(s^{\star})-\mathbf{A}^{\flat}_{\amalg}\mathbf{b}^{\flat})+\mathbf{Z}^{\sharp}\mathbf{z}^{\sharp}\in[0,b]^{nL}$ with the branch $\amalg$ realised.
+
+\noindent\emph{Proof of Claim 9.}\quad 추후 작성 예정.
+
+\smallskip\noindent\textbf{Claim 10.}\quad For every start $s^{\star}\in\mathsf{C}_0$ the branch can be pinned in the manner of Claim 9, with a uniform probability floor: conditionally on the cyclic fall schedule, on every non-fall deposit being $\leq\varepsilon$, and on the fall deposits lying in a branch cell $\mathsf{R}_{\delta,\amalg}$ consistent with the non-fall deposits' region (Claim 9), the walker realises $\amalg$ with probability at least $(1/n)^{2nL(n-1)}$; the two conditioning events themselves carry probabilities at least $\mu_{\min}^{nL}$ and $(\varepsilon/b)^{nLT_{\max}}$, so the discrete-and-smallness scaffold costs no more than the fixed factor $\mu_{\min}^{nL}\,(1/n)^{2nL(n-1)}\,(\varepsilon/b)^{nLT_{\max}}$.
+
+\noindent\emph{Proof of Claim 10.}\quad 추후 작성 예정.
+
+\smallskip\noindent\textbf{Assembly.}\quad 추후 작성 예정.
+\end{proof}
+
+\subsection{\texorpdfstring{$\psi$}{psi}-irreducibility and aperiodicity (Hypothesis 1)}
+\label{sub:irr}
+
+Running the minorisation at two coprime horizons promotes the small set of \S\ref{sub:minor} to Hypothesis (H1): the round skeleton is aperiodic and $\psi$-irreducible. We first recall these two notions.
+
+\begin{dfn}[$\psi$-irreducibility and aperiodicity; cf.\ {\cite[\S4.2, \S5.4]{MeynTweedie2009}}]
+\label{dfn:irr}
+The chain is \emph{$\phi$-irreducible} for a measure $\phi$ if every set of positive $\phi$-measure is reachable from every state: $\sum_{m \geq 1} P^m(y, \mathsf{A}) > 0$ for all $y \in \mathsf{Y}$ whenever $\phi(\mathsf{A}) > 0$. A maximal such measure exists, is denoted $\psi$, and the chain is then \emph{$\psi$-irreducible} (the continuous-state analogue of ``every state communicates with every other''). A $\psi$-irreducible chain decomposes into $d \geq 1$ cyclically visited classes; it is \emph{aperiodic} if $d = 1$, equivalently if some small set (Definition~\ref{dfn:petite}) admits a minorization for two step-counts whose greatest common divisor is $1$.
+\end{dfn}
+
+\begin{lem}
+\label{lem:doeblin-twin}
+We establish aperiodicity. For all $s^{\star}\in \mathsf{C}_0$ and $\mathsf{B}\subseteq \mathsf{U}$, the one-longer horizon satisfies $(P^{\star})^{nL+1}\bigl(s^{\star},\, \mathsf{B}\times\{v_n\}\bigr)\geq\eta'\,\dfrac{|\mathsf{B}|_{\mathrm{Leb}}}{|\mathsf{U}|_{\mathrm{Leb}}}$ for some $\eta'>0$, with the same reference measure $\nu$. Consequently $\mathsf{C}_0$ is small for both horizons $nL$ and $nL+1$. Since $\gcd(nL, nL+1) = 1$, the coprime pair of minorizations (Lemma~\ref{lem:doeblin} + Lemma~\ref{lem:doeblin-twin}) implies the round skeleton is aperiodic \cite[\S5.4]{MeynTweedie2009}. Combined with the Foster drift of Assumption~\ref{asm:Foster}, the chain is $\psi$-irreducible \cite[\S4.2]{MeynTweedie2009} with $\psi = \nu$.
+\end{lem}
+\noindent\emph{Proof.}\quad 추후 작성 예정.
+
+\begin{lem}
+\label{lem:doeblin-kskeleton}
+For the integer $\ell$ of the $\ell$-round drift (Assumption~\ref{asm:Foster}), the sublevel set $\mathsf{C}_0$ is small (hence petite) for the $\ell$-round skeleton $(P^{\star})^{\ell}$, and $(P^{\star})^{\ell}$ is $\psi$-irreducible and aperiodic.
+\end{lem}
+\noindent\emph{Proof.}\quad 추후 작성 예정.
+
+
+
+
+\subsection{The ergodic theorem and proof of \texorpdfstring{Theorem~\ref{thm:balanced}}{the balanced theorem}}
+\label{sub:thm}
+
+The three hypotheses just verified are the drift (H3, \S\ref{sub:drift}), the petite set (H2, \S\ref{sub:minor}), and $\psi$-irreducibility with aperiodicity (H1, \S\ref{sub:irr}). These are the standing assumptions of four classical ergodic theorems of \cite{MeynTweedie2009}, which we state in general form for a Markov chain $\{Y_t\}$ on a state space $\mathsf{Y}$ and then apply to the round skeleton. They are phrased through Harris recurrence, which we recall first.
+
+\begin{dfn}[(Positive) Harris recurrence and invariant law; cf.\ {\cite[\S9.1, \S10.1]{MeynTweedie2009}}]
+\label{dfn:harris}
+A $\psi$-irreducible chain is \emph{Harris recurrent} if for every $A$ with $\psi(A) > 0$ and every starting state $y$ it visits $A$ infinitely often almost surely: $\mathbb{P}_y(Y_t \in A \text{ for infinitely many } t) = 1$. An \emph{invariant probability} is a probability measure $\pi$ with $\pi(A) = \int_{\mathsf{Y}} P(y, A)\,\pi(dy)$ for all $A$ (the law is unchanged by one step). The chain is \emph{positive Harris recurrent} if it is Harris recurrent and admits an invariant probability $\pi$; such a $\pi$ is then unique.
+\end{dfn}
+
+\begin{lem}[Foster drift criterion for positive Harris recurrence; cf.\ {\cite[Thm.~11.0.1]{MeynTweedie2009}}, originating in {\cite{Foster1953}}]
+\label{lem:posHarris}
+Let $\{Y_t\}_{t \geq 0}$ be a $\psi$-irreducible, aperiodic Markov chain on a state space $\mathsf{Y}$, and suppose there exist a petite set $C \subset \mathsf{Y}$, a measurable $V \colon \mathsf{Y} \to [0, \infty)$, a constant $\tilde b < \infty$, and a non-decreasing $\varphi \colon [0, \infty) \to [0, \infty)$ with $\varphi(x) \to \infty$ as $x \to \infty$, such that
+\[
+  \mathbb{E}[V(Y_{t+1}) \mid Y_t = y] \;\leq\; V(y) - \varphi(V(y)) + \tilde b\,\mathbf{1}_C(y) \qquad \text{for all } y \in \mathsf{Y}.
+\]
+Then $\{Y_t\}$ is positive Harris recurrent with a unique invariant probability $\pi$, independent of the initial distribution.
+\end{lem}
+\noindent\emph{Proof.}\quad 추후 작성 예정.
+
+\begin{lem}[Stationary moment bound, the $f$-norm ergodic theorem; cf.\ {\cite[Thm.~14.3.7]{MeynTweedie2009}}]
+\label{lem:moment}
+Let $\{Y_t\}_{t \geq 0}$ be positive Harris recurrent with invariant probability $\pi$, and suppose that for measurable $V \colon \mathsf{Y} \to [0, \infty)$ and $f \colon \mathsf{Y} \to [0, \infty)$, a petite set $C$, and a constant $\tilde b < \infty$,
+\[
+  \mathbb{E}[V(Y_{t+1}) \mid Y_t = y] \;\leq\; V(y) - f(y) + \tilde b\,\mathbf{1}_C(y) \qquad \text{for all } y \in \mathsf{Y}.
+\]
+Then the stationary mean of $f$ is finite, $\mathbb{E}_\pi[f] = \int_{\mathsf{Y}} f\,d\pi \leq \tilde b < \infty$.
+\end{lem}
+\begin{proof}
+This is the $f$-norm ergodic theorem, the stationary form of the comparison theorem; see \cite[Thm.~14.3.7]{MeynTweedie2009}.
+\end{proof}
+
+\begin{lem}[Law of large numbers for positive Harris chains; cf.\ {\cite[Thm.~17.1.7]{MeynTweedie2009}}]
+\label{lem:LLN}
+Let $\{Y_t\}_{t \geq 0}$ be positive Harris recurrent with invariant probability $\pi$. Then for every $\pi$-integrable $g$,
+\[
+  \frac1t\sum_{k=0}^{t-1} g(Y_k) \;\xrightarrow{t \to \infty}\; \mathbb{E}_\pi[g] = \int_{\mathsf{Y}} g(y)\,\pi(dy) \quad \text{a.s.}
+\]
+\end{lem}
+\begin{proof}
+This is the law of large numbers for positive Harris recurrent chains; see \cite[Thm.~17.1.7]{MeynTweedie2009}.
+\end{proof}
+
+\begin{lem}[Ratio limit theorem; cf.\ {\cite[Thm.~17.3.2]{MeynTweedie2009}}]
+\label{lem:ratio}
+Let $\{Y_t\}_{t \geq 0}$ be positive Harris recurrent with invariant probability $\pi$. Then for all $\pi$-integrable $f, h$ with $\pi(h) \neq 0$,
+\[
+  \frac{\sum_{k=0}^{t-1} f(Y_k)}{\sum_{k=0}^{t-1} h(Y_k)} \;\xrightarrow{t \to \infty}\; \frac{\pi(f)}{\pi(h)} = \frac{\int_{\mathsf{Y}} f\,d\pi}{\int_{\mathsf{Y}} h\,d\pi} \quad \text{a.s.}
+\]
+\end{lem}
+\begin{proof}
+This is the ratio limit theorem for positive Harris recurrent chains; see \cite[Thm.~17.3.2]{MeynTweedie2009}.
+\end{proof}
+
+\begin{lem}
+\label{lem:skeleton-step-lift}
+Suppose the one-round skeleton $P^{\star}$ is positive Harris recurrent with invariant probability $\pi^{\star}$, and the round lengths are uniformly bounded, $1 \leq m_r \leq D < \infty$. Then the cycle-occupation law
+\[
+  \pi(A) \;:=\; \frac{\mathbb{E}_{\pi^{\star}}\bigl[\sum_{q=0}^{m_r-1}\mathbf{1}\{S_{t_r+q}\in A\}\bigr]}{\mathbb{E}_{\pi^{\star}}[m_r]}
+\]
+is a probability measure, invariant for the per-step chain $\{S_t\}$. Moreover, every $g \colon \mathsf{S} \to \mathbb{R}$ with
+\[
+  \mathbb{E}_{\pi^{\star}}\Bigl[\textstyle\sum_{q=0}^{m_r-1}|g(S_{t_r+q})|\Bigr] < \infty \tag*{$\cdots\ (\ast)$}
+\]
+obeys the per-step law of large numbers
+\[
+  \frac1t\sum_{k=0}^{t-1} g(S_k) \;\xrightarrow{t\to\infty}\; \int_{\mathsf{S}} g(s)\,\pi(ds) \quad\text{a.s.}
+\]
+\end{lem}
+\noindent\emph{Proof.}\quad 추후 작성 예정.
+
+\begin{thm}
+\label{thm:balanced}
+Assume the standing setting (connected $\mathcal{G}$, canonical degree-proportional $\boldsymbol{\mu}_0$) and the single Tier 2 hypothesis (A3) of \S\ref{sec:regimes}: $(\mathcal{G}, \boldsymbol{\mu}_0, b, T_{\max})$ satisfies the $\ell$-round Foster drift (Assumption~\ref{asm:Foster}).
+Then there exists a deterministic matrix $C = [c_{ij}]_{i,j \in \mathsf{V}}$ with $c_{ij} = c_{ij}(\mathcal{G}, \boldsymbol{\mu}_0, b, T_{\max}) \geq 0$ such that
+\[
+  \frac{SD^2_{ij}(t)}{t} \;\xrightarrow{t \to \infty}\; c_{ij} \qquad \text{a.s.,}
+\]
+and the limit $c_{ij}$ is independent of the initial signal $\mathbf{y}$. The balanced occupation $\rho_i = 1/n$ ($i = 1, \ldots, n$) is \emph{not} assumed; under (A3) it follows from the stationary law.
+\end{thm}
+
+\noindent\emph{Proof.}\quad 추후 작성 예정.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{Bremaud1999} Br\'emaud, P. (1999). \textit{Markov Chains: Gibbs Fields, Monte Carlo Simulation, and Queues}. Springer.
+
+\bibitem{Davidson1994} Davidson, J. (1994). \textit{Stochastic Limit Theory}. Oxford UP.
+
+\bibitem{Durrett2019} Durrett, R. (2019). \textit{Probability: Theory and Examples} (5th ed.). Cambridge UP.
+
+\bibitem{Foster1953} Foster, F. G. (1953). On the stochastic matrices associated with certain queuing processes. \textit{Ann.\ Math.\ Statist.} \textbf{24}, 355--360.
+
+\bibitem{Knopp1928} Knopp, K. (1928). \textit{Theory and Application of Infinite Series} (English transl., 1947). Blackie \& Son, London.
+
+\bibitem{MeynTweedie2009} Meyn, S. and Tweedie, R. L. (2009).
+\textit{Markov Chains and Stochastic Stability} (2nd ed.). Cambridge UP.
+
+\end{thebibliography}
+
+\end{document}
+
