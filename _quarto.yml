@@ -10,12 +10,18 @@ project:
     - "Posts/attachments"
 
 website:
-  title: "HST Research Blog"
+  title: "HS Research Blog"
 
   page-footer:
     border: true
 
-  navbar: false
+  navbar:
+    left:
+      - text: 신록예찬
+        href: https://miruetoto.github.io/yechan/
+    right:
+      - icon: github
+        href: https://github.com/miruetoto/hsblog
 
 format:
   html:
