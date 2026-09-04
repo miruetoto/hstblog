@@ -10,15 +10,12 @@ project:
     - "Posts/attachments"
 
 website:
-  title: "HS Research Blog"
+  title: "연구진행과정공유(최규빈)"
 
   page-footer:
     border: true
 
   navbar:
-    left:
-      - text: 신록예찬
-        href: https://miruetoto.github.io/yechan/
     right:
       - icon: github
         href: https://github.com/miruetoto/hsblog
