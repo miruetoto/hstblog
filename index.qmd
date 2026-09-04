@@ -11,4 +11,3 @@ page-layout: full
 title-block-banner: false
 ---
 
-Heavy Snow Transform 연구 블로그.
